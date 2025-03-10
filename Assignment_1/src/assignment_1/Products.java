@@ -42,13 +42,13 @@ public abstract class Products {
         this.type = type;
     }
     
-    public void printInfo(){
+    public String printInfo(){
         String out = "";
         
         DecimalFormat format = new DecimalFormat("#0.00");
         
         out = "Category: " + this.type + " Product Name: " + this.itemName + "Cost: $" + format.format(this.price);
         
-        System.out.println(out);
+        return out;
     }
 }
