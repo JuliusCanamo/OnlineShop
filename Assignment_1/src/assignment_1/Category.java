@@ -4,53 +4,30 @@
  */
 package assignment_1;
 
+import java.util.List;
+
 /**
  *
  * @author simpl
  */
-public class Category extends Products {
-    
-    private String type;
-    Products product;
-    
-    public Category(String type){
-        super(type);
-        this.type = type;
-    }
-    
-    public void printType(){
-        //Please optimize later on
-        //Rough sketch of the ideology of the method
-        switch(type){
-            case "Pants":
-                if(this.type == "Pants" && product.getItemType() == this.type){
-                    product.printInfo();
-                }
-                break;
-            case "Shorts":
-                if(this.type == "Shorts" && product.getItemType() == this.type){
-                    product.printInfo();
-                }
-                break;
-            case "Shirts":
-                if(this.type == "Shirts" && product.getItemType() == this.type){
-                    product.printInfo();
-                }
-                break;
-            case "Hoodies":
-                if(this.type == "Hoodies" && product.getItemType() == this.type){
-                    product.printInfo();
-                }
-                break;
-                
-            case "Sweatshirts":
-                if(this.type == "Sweatshirts" && product.getItemType() == this.type){
-                    product.printInfo();
-                }
-                break;
-            default:
-                System.out.println("Category given is invalid");
-                System.exit(0);
+public class Category{
+
+    public void printType(String tp, List<Products> product){
+        
+        System.out.println("Products inside '" + tp + "'");
+        
+        boolean match = false;
+        for(Products pp : product){
+            if(pp != null && pp.getItemType().equalsIgnoreCase(tp)){
+                System.out.println(pp.printInfo());
+                match = true;
+            }
+        }
+        
+        if(!match){
+            System.out.println("Nothing under your selected category");
+            System.exit(0);
         }
     }
 }
+
