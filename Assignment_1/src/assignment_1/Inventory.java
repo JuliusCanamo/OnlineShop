@@ -19,11 +19,16 @@ public class Inventory{
     //But with Chatgpt, it explained that
     //Inventory doesn't have any relation with Product
     //as Inventory stores a products items not a alternative version of product
-    List<Products> inventory;
+    private List<Products> inventory;
     
     public Inventory (){
         this.inventory = new ArrayList<>();
     }
+    
+    public List<Products> getInventory() {
+        return inventory;
+    }
+    
     
     public void addToInvetory(Products product){
         //My code from Programming 2 Assignment 1
@@ -36,13 +41,12 @@ public class Inventory{
 //            stored++;
 //        }
 
-        if(inventory.isEmpty()){
-            System.out.println("Nothing inside our Inventory");
-            System.exit(0);
-        }
-        else{
-            inventory.add(product);
-        }
+        if(product != null){
+             inventory.add(product);
+         }
+         else{
+             System.out.println("Unable to be stored");
+         }
     }
     
     public String printInventory(){
@@ -61,17 +65,18 @@ public class Inventory{
         //return "All stock: \n" + this.inventory;
         
         //Version 3 with improves from Chatgpt
-        StringBuilder list = new StringBuilder();
-        
-        list.append("All Stock: \n");
-        
-        for(Products p : inventory){
-            if(p != null){
-                list.append(p.printInfo()).append("\n");
-            }
-            System.out.println("Nothing inside our inventory");
-        }
-        return list.toString();
+        StringBuilder list = new StringBuilder("All Stock: \n");
+
+          if(inventory.isEmpty()){
+              return "Nothing inside the inventory";  // If inventory is empty, print this message
+          }
+
+          for(Products p : inventory){
+              if(p != null){  // This check should be redundant since ArrayList can only store non-null objects, but it's a safety measure
+                  list.append(p.printInfo()).append("\n");
+              }
+          }
+          return list.toString();
     }
     
 }

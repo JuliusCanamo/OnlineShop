@@ -13,12 +13,14 @@ public class Products {
     //those other classes is not a type of product but simply a container for it
     
     private String itemName;
-    private String type;
+    private Category.CategoryType type;
     private double price;
+    private String size;
     
-    public Products(String type, String itemName, double price){
-        this.type = type;
+    public Products(String itemName, Category.CategoryType  type, String size, double price){
         this.itemName = itemName;
+        this.type = type;
+        this.size = size;
         this.price = price;
     }
     
@@ -26,7 +28,7 @@ public class Products {
         return this.itemName;
     }
     
-    public String getItemType(){
+    public Category.CategoryType getItemType(){
         return this.type;
     }
     
@@ -42,11 +44,11 @@ public class Products {
         this.price = price;
     }
     
-    public void setItemType (String type){
+    public void setItemType (Category.CategoryType type){
         this.type = type;
     }
     
-    public String printInfo(){
+    public String printInfo(){ 
         //Code that Laraib wrote
         //As she tested it on her laptop but
         //was unable to push due to an error code
@@ -54,7 +56,7 @@ public class Products {
         //where it actual prints out the info for the product items
         DecimalFormat format = new DecimalFormat("#0.00");
         
-        return "Category: " + this.type + " Product Name: " + this.itemName + "Cost: $" + format.format(this.price);
+        return " Product Name: " + this.itemName + " Category: " + this.type + " Size: " + this.size +  "Cost: $" + format.format(this.price);
     }
 }
 
