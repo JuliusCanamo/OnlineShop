@@ -49,6 +49,16 @@ public class Inventory{
          }
     }
     
+    public Products getProductByName(String name){
+        for(Products p : inventory){
+            if(p.getItemName().equalsIgnoreCase(name)){
+                return p;
+            }
+        }
+        
+        return null;
+    }
+    
     public String printInventory(){
         //String content = "";
         
@@ -78,5 +88,4 @@ public class Inventory{
           }
           return list.toString();
     }
-    
 }

@@ -27,13 +27,12 @@ public class Cart {
         this.count = 0;
     }
     
-    public void addToCart(String item, Category.CategoryType type, String size, double price, double quantity){
-        Products p = new Products(item, type, size, price);
+    public void addToCart(Products p){
         cart[count] = p;
-        cost += (price * quantity);
+        cost += p.getItemPrice();
         count++;
         
-        System.out.println(item + " has been added to cart");
+        System.out.println(p.getItemName() + " has been added to cart");
     }
     
     public void viewCart(){

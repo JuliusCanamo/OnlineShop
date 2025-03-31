@@ -4,13 +4,13 @@
  */
 package assignment_1;
 
+import java.text.DecimalFormat;
+
 /**
  *
  * @author simpl
  */
 public class Discounts {
-    
-    private double sales;
     
     public double reducePrice(Products p){
         
@@ -19,8 +19,10 @@ public class Discounts {
         //code above was something I quickly wrote out
         //it correctly calculated the new price but didn't set it
         
-        sales = p.getItemPrice();
-        double newPrice = sales * 20/100;
+        double sales = p.getItemPrice();
+        double newPrice = sales - (sales * 20/100);
+        DecimalFormat format = new DecimalFormat("#0.00");
+        newPrice = Double.parseDouble(format.format(newPrice));
         
         p.setItemPrice(newPrice);
         return newPrice;
