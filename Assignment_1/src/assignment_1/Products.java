@@ -48,6 +48,9 @@ public class Products {
         this.type = type;
     }
     
+    public String getItemSize() {
+    return this.size;
+}
     public String printInfo(){ 
         //Code that Laraib wrote
         //As she tested it on her laptop but
@@ -56,7 +59,10 @@ public class Products {
         //where it actual prints out the info for the product items
         DecimalFormat format = new DecimalFormat("#0.00");
         
-        return " Product Name: " + this.itemName + " Category: " + this.type + " Size: " + this.size +  "Cost: $" + format.format(this.price);
+        return " PRODUCT NAME: " + this.itemName + "\n"
+              + " CATEGORY: " + this.type + "\n"
+              + " SIZE: " + this.size +  "\n"
+              + " COST: $" + format.format(this.price);
     }
 }
 

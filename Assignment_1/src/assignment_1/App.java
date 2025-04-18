@@ -14,4 +14,9 @@ public class App {
         OnlineShop app = new OnlineShop();
         app.ShopInterface();
     }
+    
+//       public static void main(String[] args) {
+//        Inventory inventory = new Inventory();
+//        System.out.println(inventory.printInventory());
+//    }
 }
