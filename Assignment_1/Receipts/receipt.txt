@@ -1,0 +1,8 @@
+====== Purchase Receipt ======
+ PRODUCT NAME: Minimaluxe Slip Dress
+ CATEGORY: DRESSES
+ SIZE: M  
+ COST: $69.99
+
+Total Amount: $69.99
+==============================

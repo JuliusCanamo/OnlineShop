@@ -1,0 +1,8 @@
+====== Purchase Receipt ======
+ PRODUCT NAME: MonoEdge Denim Shorts
+ CATEGORY: SHORTS
+ SIZE: L  
+ COST: $39.99
+
+Total Amount: $39.99
+==============================

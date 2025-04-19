@@ -1,0 +1,8 @@
+====== Purchase Receipt ======
+ PRODUCT NAME: StrideForm Sneakers
+ CATEGORY: FOOTWEAR
+ SIZE: 8  
+ COST: $89.99
+
+Total Amount: $89.99
+==============================

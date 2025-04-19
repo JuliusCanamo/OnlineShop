@@ -1,0 +1,8 @@
+====== Purchase Receipt ======
+ PRODUCT NAME: LuxeFade Crewneck Sweatshirt
+ CATEGORY: SWEATSHIRTS
+ SIZE: L  
+ COST: $45.50
+
+Total Amount: $45.50
+==============================

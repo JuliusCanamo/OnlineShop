@@ -1,0 +1,18 @@
+====== Purchase Receipt ======
+ PRODUCT NAME: Jeans
+ CATEGORY: PANTS
+ SIZE: M
+ COST: $49.99
+ PRODUCT NAME: Jeans
+ CATEGORY: PANTS
+ SIZE: M
+ COST: $49.99
+ PRODUCT NAME: Crewneck Sweatshirt
+ CATEGORY: SWEATSHIRTS
+ SIZE: L
+ COST: $45.50
+
+Total Amount: $145.48
+Discount (20%): -$29.10
+Discounted Total: $116.38
+==============================

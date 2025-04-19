@@ -1,0 +1,37 @@
+Order:
+Jeans | PANTS | M | $49.99
+----
+Order:
+Jeans | PANTS | M | $49.99
+----
+Order:
+Jeans | PANTS | M | $49.99
+----
+Order:
+Jeans | PANTS | M | $49.99
+Jeans | PANTS | M | $49.99
+Crewneck Sweatshirt | SWEATSHIRTS | L | $45.5
+----
+Order:
+Jeans | PANTS | M | $49.99
+Jeans | PANTS | M | $49.99
+Crewneck Sweatshirt | SWEATSHIRTS | L | $45.5
+----
+Order:
+Minimaluxe Slip Dress | DRESSES | M   | $69.99
+----
+Order:
+Minimaluxe Slip Dress | DRESSES | M   | $69.99
+----
+Order:
+StrideForm Sneakers | FOOTWEAR | 8   | $89.99
+----
+Order:
+StrideForm Sneakers | FOOTWEAR | 8   | $89.99
+----
+Order:
+MonoEdge Denim Shorts | SHORTS | L   | $39.99
+----
+Order:
+MonoEdge Denim Shorts | SHORTS | L   | $39.99
+----
