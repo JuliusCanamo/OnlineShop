@@ -44,13 +44,27 @@ public class Cart {
         System.out.println(p.getItemName() + " has been added to cart");
     }
 
+    public void addToCart(int itemNumber, List<Products> availableProducts) {
+        if (itemNumber < 1 || itemNumber > availableProducts.size()) {
+            System.out.println("Invalid item number. Please try again.");
+            return;
+        }
+
+        Products selectedProduct = availableProducts.get(itemNumber - 1); // 1-based index
+        cart[count] = selectedProduct;
+        cost += selectedProduct.getItemPrice();
+        count++;
+
+        System.out.println(selectedProduct.getItemName() + " has been added to cart.");
+    }
+
     public void viewCart() {
-        
-        Discounts d=new Discounts();
-        double finalTotal= d.discountTotal(this);
-                    
+
+        Discounts d = new Discounts();
+        double finalTotal = d.discountTotal(this);
+
         System.out.println("Inside the Cart:");
-        
+
         if (count == 0) {
             System.out.println("Cart is empty.");
         } else {
@@ -63,20 +77,18 @@ public class Cart {
             System.out.printf("Discounted Total (20%% off): $%.2f%n", finalTotal);
         }
     }
-    
-    public void clearCart(){
-        for(int i=0;i<count;i++){
-            cart[i]=null;
+
+    public void clearCart() {
+        for (int i = 0; i < count; i++) {
+            cart[i] = null;
         }
-        count=0;
-        cost=0.0;
+        count = 0;
+        cost = 0.0;
         System.out.println("Cart has been cleared");
     }
-    
-    public double getTotalCost()
-    {
+
+    public double getTotalCost() {
         return cost;
     }
-    
-    
+
 }

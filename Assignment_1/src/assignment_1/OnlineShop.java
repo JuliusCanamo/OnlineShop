@@ -4,6 +4,7 @@
  */
 package assignment_1;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class OnlineShop {
@@ -14,169 +15,215 @@ public class OnlineShop {
 
         //So I changed it since main got away too long and messy
         //All main handles will be in App :)
-        char menu;
-        String type;
+        String menu;
         Scanner scanner = new Scanner(System.in);
         Inventory storage = new Inventory();
         Cart ct = new Cart();
         boolean shop = true;
 
-//        //Test items
-//        Products p1 = new Products("Acne Jeans Light Blue", Category.CategoryType.PANTS, "36", 350.99);
-//        Products p2 = new Products("Tommy Jeans Boxy Pop Varisty Crewneck Blue", Category.CategoryType.SWEATSHIRTS, "Medium", 50.99);
-//        Products p3 = new Products("adidas Essentials Small Logo Feelcozy Sweatshirt Black", Category.CategoryType.SWEATSHIRTS, "Small", 44.99);
-//        Products p4 = new Products("Women's Wide Leg Trackpants Cream", Category.CategoryType.PANTS, "18", 350.99);
-//        Products p5 = new Products("Class White Tee", Category.CategoryType.SHIRTS , "Medium", 33.99);
-//        Products p6 = new Products("Heavy Weight Black Tee", Category.CategoryType.SHIRTS, "Medium", 49.99);
-//        Products p7 = new Products("Low Rise Relaxed Straight Leg Jean", Category.CategoryType.PANTS, "24", 89.99);
-//        Products p8 = new Products("Classic Mens Sweater, Light Blue", Category.CategoryType.PANTS, "Small", 75.99);
-//        
-//        storage.addToInvetory(p1);
-//        storage.addToInvetory(p2);
-//        storage.addToInvetory(p3);
-//        storage.addToInvetory(p4);
-//        storage.addToInvetory(p5);
-//        storage.addToInvetory(p6);
-//        storage.addToInvetory(p7);
-//        storage.addToInvetory(p8);
-//        
-        System.out.println("WELCOME TO COLLECTION WORLD");
+        System.out.println("-----------------------------");
+        System.out.println(" WELCOME TO COLLECTION WORLD ");
+        System.out.println("-----------------------------");
 
-        // --- LOGIN SYSTEM ---
-        Customer user = null;
+        // --- Ask if user wants to login or not ---
+        System.out.println("Would you like to log in? (yes/no)");
+        String answer = scanner.nextLine().toUpperCase();
+        checkExit(answer);
 
-        while (user == null) {
-            System.out.println("Please Log In:");
-            System.out.print("Username: ");
-            String name = scanner.nextLine().trim();
+        // If user wants to log in
+        if (answer.equalsIgnoreCase("yes")) {
+            Customer user = userManager.loginOrRegister(scanner);
 
-            System.out.print("Password: ");
-            String password = scanner.nextLine().trim();
+            // After login/register, continue to the shopping interface
+            while (shop) {
+                showMenu();
+                menu = scanner.nextLine().toUpperCase();
+                checkExit(menu);
 
-            if (userManager.login(name, password)) {
-                user = userManager.getLoggedInUser();
-                break;
-            } else {
-                System.out.print("User Not Found. Would you like to register instead? (yes/no): ");
-                String choice = scanner.nextLine().trim();
+                switch (menu) {
+                    case "A":
+                        System.out.println(storage.printInventory());
 
-                if (choice.equalsIgnoreCase("yes")) {
-                    userManager.register(name, password);
-                    System.out.println("Registration successful. Logging in ...");
-                    userManager.login(name, password); //logs user in automatically
-                    user = userManager.getLoggedInUser();
-                } else {
-                    System.out.println("Login failed. Please try again");
+                        System.out.println("Would you like to add an item to the cart? (yes/no)");
+                        String choice = scanner.nextLine().trim();
+                        checkExit(choice);
+
+                        if (choice.equalsIgnoreCase("yes")) {
+                            addToCart(scanner, storage, ct);
+                        } else if(choice != ("yes") || choice !=("no"))
+                        {
+                            System.out.println("Invalid input, Please enter yes or no!");
+                        }
+                        break;
+                    case "B":
+                        showDiscounts();
+                        break;
+                    case "C":
+                        showCategories(scanner, storage);
+                        break;
+                    case "D":
+                        viewCart(scanner, ct, user);
+                        break;
+                    case "E":
+                        showOrderHistory(user);
+                        break;
+                    case "X":
+                        System.out.println("\nTHANK YOU FOR SHOPPING WITH US!");
+                        System.exit(0);
+                        break;
+                    default:
+                        System.out.println("Invalid Option");
+                        break;
+                }
+            }
+        } // If user does not want to log in
+        else {
+            while (shop) {
+                showMenu();
+                menu = scanner.nextLine().toUpperCase();
+                checkExit(menu);
+
+                switch (menu) {
+                    case "A":
+                        System.out.println(storage.printInventory());
+
+                        System.out.println("Would you like to add an item to the cart? (yes/no)");
+                        String choice = scanner.nextLine().trim();
+                        checkExit(choice);
+
+                        if (choice.equalsIgnoreCase("yes")) {
+                            addToCart(scanner, storage, ct);
+                        }
+                        break;
+                    case "B":
+                        showDiscounts();
+                        break;
+                    case "C":
+                        showCategories(scanner, storage);
+                        break;
+                    case "D":
+                        viewCart(scanner, ct, null); // No user logged in
+                        break;
+                    case "E":
+                        System.out.println("No order history available, as you are not logged in.");
+                        break;
+                    case "X":
+                        System.out.println("\nTHANK YOU FOR SHOPPING WITH US!");
+                        System.exit(0);
+                        break;
+
+                    default:
+                        System.out.println("Invalid Option");
+                        break;
                 }
             }
         }
+    }
 
-        System.out.println("Login successful! Welcome, " + user.getName());
+// Method: To display set shopping menu
+    private void showMenu() {
+        System.out.println("\nPlease enter the letter to select your option:");
+        System.out.println("A: View Inventory");
+        System.out.println("B: View Discounts");
+        System.out.println("C: View Category");
+        System.out.println("D: View Cart");
+        System.out.println("E: View Order History");
+        System.out.println("X: Exit System");
+    }
 
-        while (shop) {
-            System.out.println("\nPlease enter the letter to select your option:");
-            System.out.println("A: View Inventory");
-            System.out.println("B: View Discounts");
-            System.out.println("C: View Category");
-            System.out.println("D: View Cart");
-            System.out.println("E: Exit System");
-            System.out.println("F: View Order History");
-            menu = scanner.nextLine().toUpperCase().charAt(0);
-            //scanner.nextLine();
-            switch (menu) {
-                case 'A':
-                    System.out.println(storage.printInventory());
+// Method: To add to cart based on number selected
+    private void addToCart(Scanner scanner, Inventory storage, Cart ct) {
+        System.out.println("Enter the number of the item you would like to add: ");
 
-                    System.out.println("Would you like to add an item to the cart? (yes/no)");
-                    String choice = scanner.nextLine().trim();
+        try {
+            int itemNumber = Integer.parseInt(scanner.nextLine().trim());
 
-                    if (choice.equalsIgnoreCase("yes")) {
-                        System.out.println("Which product would you like to add? ");
-                        String pName = scanner.nextLine().trim();
+            List<Products> items = storage.getInventory();
+            if (itemNumber >= 1 && itemNumber <= items.size()) {
+                Products selected = items.get(itemNumber - 1); // Adjust for 0-based index
+                ct.addToCart(selected);
+                System.out.println("Item added to cart.");
+            } else {
+                System.out.println("Invalid item number. Please try again.");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Please enter a valid number.");
+        }
+    }
 
-                        Products selected = storage.getProductByName(pName);
+// Method: To show discounts
+    private void showDiscounts() {
+        System.out.println("CURRENT DISCOUNTS\n");
+        System.out.println("Buy 3 or more items to receive 20% off your total order.");
+    }
 
-                        if (selected != null) {
-                            ct.addToCart(selected);
-                            System.out.println("Item added to cart.");
-                        } else {
-                            System.out.println("Item is not in inventory");
+// Method: To show category options
+    private void showCategories(Scanner scanner, Inventory storage) {
+        System.out.println("Choose a category:\n"
+                + "-PANTS\n"
+                + "-SHORTS\n"
+                + "-HOODIES\n"
+                + "-SHIRTS\n"
+                + "-SWEATSHIRTS\n"
+                + "-OUTERWEAR\n"
+                + "-ACTIVEWEAR\n"
+                + "-DRESSES\n"
+                + "-FOOTWEAR");
+        String type = scanner.nextLine().trim().toUpperCase();
+        checkExit(type);
+        Category cat = new Category();
+        cat.printType(type, storage.getInventory());
+    }
 
-                        }
+// Method: To view cart,Checkout / continue shopping, Get receipt, Clear cart
+    private void viewCart(Scanner scanner, Cart ct, Customer user) {
+        ct.viewCart();
+
+        if (!ct.getCartItems().isEmpty()) {
+            System.out.println("Would you like to (1) Checkout or (2) Continue Shopping?");
+            String actionChoice = scanner.nextLine().trim();
+            checkExit(actionChoice);
+
+            if (actionChoice.equals("1")) { // Checkout
+                if (user != null) {
+                    user.saveOrder(ct); // Save to memory
+                    System.out.println("Would you like to save a receipt? (yes/no)");
+
+                    String receiptChoice = scanner.nextLine().trim();
+                    checkExit(receiptChoice);
+                    if (receiptChoice.equalsIgnoreCase("yes")) {
+
+                        ReceiptGenerator.writeCartSummary(ct);
+                        user.getOrderHistory().saveOrderToFile(user.getName(), ct); // Save to file
                     }
+                } else {
+                    System.out.println("You are not logged in, so the order cannot be saved.");
+                }
 
-                    break;
-                case 'B':
-                    Discounts ds = new Discounts();
-                    System.out.println("Discounted Prices");
-                    for (Products product : storage.getInventory()) {
-                        double original = product.getItemPrice();
-                        double discounted = ds.reducePrice(product);
-                        System.out.printf("%s - Original: $%.2f, Discounted: $%.2f%n",
-                                product.getItemName(), original, discounted);
-                    }
-
-                    break;
-                case 'C':
-                    //scanner.nextLine();
-                    System.out.println("Choose a category(Pants, Shorts,Hoodies, Shirts,Sweatshirts):");
-                    type = scanner.nextLine().trim().toUpperCase();
-                    Category cat = new Category();
-                    cat.printType(type, storage.getInventory());
-//                System.out.println("Pants");
-//                System.out.println("Shorts");
-//                System.out.println("Hoodies");
-//                System.out.println("Shirts");
-//                System.out.println("Sweatshirts");
-//                type = scanner.nextLine().trim().toUpperCase();
-//                Category cat = new Category();
-//                cat.printType(type, storage.getInventory());
-                    break;
-                case 'D':
-
-//                    ct.viewCart();
-//
-//                    Customer loggedUser = userManager.getLoggedInUser(); //change variable name
-//                    if (loggedUser != null) {
-//                        loggedUser.saveOrder(ct);//save a copy of the cart
-//                       loggedUser.getOrderHistory().saveOrderToFile(user.getName(), ct);
-//                        ct.clearCart(); //clear cart after purchase
-//                       
-//                    }
-//
-//                    System.out.println("Would you like to save a receipt? (yes/no)");
-//                    String receiptChoice = scanner.nextLine().trim();
-//
-//                    if (receiptChoice.equalsIgnoreCase("yes")) {
-//                        ReceiptGenerator.writeCartSummary("receipt.txt", ct);
-//                    }
-//                     cart.viewCart();
-                    if (!ct.getCartItems().isEmpty()) {
-                        user.saveOrder(ct); // Save to memory
-                        System.out.println("Would you like to save a receipt? (yes/no)");
-                        if (scanner.nextLine().trim().equalsIgnoreCase("yes")) {
-                            ReceiptGenerator.writeCartSummary("receipt.txt", ct);
-                            user.getOrderHistory().saveOrderToFile(user.getName(), ct); // <-- add this
-                        }
-                        ct.clearCart(); // Clear cart
-                    } else {
-                        System.out.println("Cart is empty.");
-                    }
-
-                    break;
-                case 'E':
-                    System.out.println("Thank You for Shopping with us!");
-                    System.exit(0);
-                    break;
-                case 'F':
-                    user.getOrderHistory().loadOrdersFromFile(user.getName());
-                    user.getOrderHistory().printOrderHistory();
-
-                    break;
-                default:
-                    System.out.println("Invalid Option");
-                    break;
+                ct.clearCart(); // Clear cart after checkout
+                System.out.println("Thank you for your purchase!");
+            } else {
+                System.out.println("Returning to main menu to continue shopping.");
             }
         }
     }
+
+// Method: to show order history
+    private void showOrderHistory(Customer user) {
+        if (user != null) {
+            user.getOrderHistory().loadOrdersFromFile(user.getName());
+            user.getOrderHistory().printOrderHistory();
+        } else {
+            System.out.println("No order history available, as you are not logged in.");
+        }
+    }
+
+    //Method: To exit at any stage
+    private void checkExit(String input) {
+        if (input.equalsIgnoreCase("X")) {
+            System.out.println("\nTHANK YOU FOR SHOPPING WITH US!");
+            System.exit(0);
+        }
+    }
+
 }

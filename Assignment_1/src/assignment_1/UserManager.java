@@ -31,7 +31,7 @@ public class UserManager {
             users.put(name, newCustomer);
             // Save the user to a file
             saveUserToMasterFile(newCustomer);
-            System.out.println("Registration successful for user: " + name);
+            System.out.println("Registration successful for user: " + name + "Logging in... \n");
             return true;
 
         } else {
@@ -45,9 +45,9 @@ public class UserManager {
             FileWriter writer = new FileWriter("users.txt", true); // true = append
             writer.write(user.getName() + "," + user.getPassword() + "\n");
             writer.close();
-            System.out.println("User added to master file.");
+            System.out.println("User added. \n");
         } catch (IOException e) {
-            System.out.println("Error saving user to master file: " + e.getMessage());
+            System.out.println("Error saving user: " + e.getMessage());
         }
     }
 
@@ -78,10 +78,9 @@ public class UserManager {
         Customer c = users.get(name);
         if (c != null && c.checkPassword(password)) {
             loggedInUser = c;
-            System.out.println("Welcome back, " + name + "!");
+            System.out.println("Login successful! Welcome, " + name);
             return true;
         }
-        //System.out.println("Invalid login credentials");
         return false;
     }
 
@@ -96,7 +95,38 @@ public class UserManager {
         return loggedInUser;
     }
 
-     public boolean userExists(String name) {
+    public boolean userExists(String name) {
         return users.containsKey(name);
+    }
+
+    public Customer loginOrRegister(Scanner scanner) {
+        Customer user = null;
+
+        while (user == null) {
+            System.out.println("Please Enter Your Log In Details.");
+            System.out.print("Username: ");
+            String name = scanner.nextLine().toUpperCase().trim();
+
+            System.out.print("Password: ");
+            String password = scanner.nextLine().toUpperCase().trim();
+
+            if (login(name, password)) {
+                user = getLoggedInUser();
+                break;
+            } else {
+                System.out.print("User Not Found. Would you like to register instead? (yes/no): ");
+                String choice = scanner.nextLine().trim();
+
+                if (choice.equalsIgnoreCase("yes")) {
+                    register(name, password);
+                    login(name, password); // logs user in automatically
+                    user = getLoggedInUser();
+                } else {
+                    System.out.println("Login failed. Please try again.");
+                }
+            }
+        }
+
+        return user;
     }
 }

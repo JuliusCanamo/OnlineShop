@@ -35,56 +35,77 @@ public class OrderHistory {
 
     public void printOrderHistory() {
         if (pastOrders.isEmpty()) {
-            System.out.println("No past orders found.");
-        } else {
-
-            for (Cart cart : pastOrders) {
-                cart.viewCart();
-            }
+        System.out.println("No past orders found.");
+    } else {
+        System.out.println("----- Past Orders -----");
+        int orderNumber = 1;
+        for (Cart cart : pastOrders) {
+            System.out.println("\nOrder #" + orderNumber++);
+            cart.viewCart();  // this prints the cart content and total
+            System.out.println("-----------------------");
         }
+    }
     }
     //Save cart to file for user
 
-    public void saveOrderToFile(String name, Cart cart) {
-        try (FileWriter writer = new FileWriter("orderhistory_" + name + ".txt", true)) {
-            writer.write("Order:\n");
+     public void saveOrderToFile(String userName, Cart cart) {
+        String userFolderPath = "OrderHistory/" + userName;
+        File userFolder = new File(userFolderPath);
+
+        if (!userFolder.exists()) {
+            userFolder.mkdirs();
+        }
+
+        int orderNumber = userFolder.list().length + 1; // count files to assign new order number
+        String filename = "order_" + orderNumber + ".txt";
+        File orderFile = new File(userFolder, filename);
+
+        try (FileWriter writer = new FileWriter(orderFile)) {
             for (Products p : cart.getCartItems()) {
                 writer.write(p.getItemName() + " | " + p.getItemType() + " | "
                         + p.getItemSize() + " | $" + p.getItemPrice() + "\n");
             }
-            writer.write("----\n"); // separator
+            System.out.println("Order saved to file: " + orderFile.getPath());
         } catch (IOException e) {
             System.out.println("Failed to save order to file: " + e.getMessage());
         }
     }
-     // Load past orders from file for user
-    public void loadOrdersFromFile(String name) {
-        File file = new File("orderhistory_" + name + ".txt");
-        if (!file.exists()) {
-            System.out.println("No saved order history for user: " + name);
+    // Load past orders from file for user
+
+    public void loadOrdersFromFile(String userName) {
+        pastOrders.clear(); // avoid duplicate loading
+        File userFolder = new File("OrderHistory/" + userName);
+
+        if (!userFolder.exists() || !userFolder.isDirectory()) {
+            System.out.println("No saved order history for user: " + userName);
             return;
         }
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String line;
-            Cart tempCart = new Cart();
-            while ((line = reader.readLine()) != null) {
-                if (line.equals("----")) {
-                    pastOrders.add(tempCart);
-                    tempCart = new Cart(); // reset
-                } else if (!line.equals("Order:")) {
+        File[] orderFiles = userFolder.listFiles((dir, name) -> name.endsWith(".txt"));
+        if (orderFiles == null || orderFiles.length == 0) {
+            System.out.println("No saved order history for user: " + userName);
+            return;
+        }
+
+        for (File file : orderFiles) {
+            Cart cart = new Cart();
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
                     String[] parts = line.split("\\|");
                     if (parts.length == 4) {
                         String pname = parts[0].trim();
                         Category.CategoryType category = Category.CategoryType.valueOf(parts[1].trim().toUpperCase());
                         String size = parts[2].trim();
                         double price = Double.parseDouble(parts[3].trim().replace("$", ""));
-                        tempCart.addToCart(new Products(pname, category, size, price));
+                        cart.addToCart(new Products(pname, category, size, price));
                     }
                 }
+                pastOrders.add(cart);
+            } catch (IOException e) {
+                System.out.println("Error reading file: " + file.getName() + " - " + e.getMessage());
             }
-        } catch (IOException e) {
-            System.out.println("Error loading order history: " + e.getMessage());
         }
     }
+
 }
