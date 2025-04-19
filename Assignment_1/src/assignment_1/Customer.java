@@ -12,12 +12,14 @@ public class Customer {
     private String name;
     private String password;
     private OrderHistory orderHistory;  // The customer's order history
+    private Money money;
 
     // Constructor
     public Customer(String name, String password) {
         this.name = name;
         this.password=password;
         this.orderHistory = new OrderHistory();
+        this.money = new Money();
     }
 
     //Checking password
@@ -50,6 +52,10 @@ public class Customer {
 
     public String getPassword() {
         return password;
+    }
+    
+    public Money getMoney(){
+        return this.money;
     }
 
 }

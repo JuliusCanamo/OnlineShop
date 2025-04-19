@@ -1,0 +1,21 @@
+====== Purchase Receipt ======
+ PRODUCT NAME: SlateForm Jeans
+ CATEGORY: PANTS
+ SIZE: M  
+ COST: $49.99
+ PRODUCT NAME: MonoEdge Denim Shorts
+ CATEGORY: SHORTS
+ SIZE: L  
+ COST: $39.99
+ PRODUCT NAME: LayerCore Graphic Hoodie
+ CATEGORY: HOODIES
+ SIZE: XL  
+ COST: $59.99
+
+Total Amount: $149.97
+Discount (20%): -$29.99
+Discounted Total: $119.98
+
+Account Balance Before: $1000.00
+Account Balance After:  $880.02
+==============================

@@ -50,7 +50,7 @@ public class ReceiptGenerator {
 //        }
 //    }
 //    
-    public static void writeCartSummary(Cart cart) {
+    public static void writeCartSummary(Cart cart, Customer user) {
         String folderName = "Receipts";
         File receiptDir = new File(folderName);
 
@@ -82,6 +82,14 @@ public class ReceiptGenerator {
                 bw.write("\nDiscount (20%): -$" + String.format("%.2f", discountAmount));
                 bw.write("\nDiscounted Total: $" + String.format("%.2f", discountedTotal));
             }
+            
+            if(user != null){
+                 double beforeBalance = user.getMoney().getBalance() + discountedTotal;
+                double afterBalance = user.getMoney().getBalance(); 
+
+                bw.write("\n\nAccount Balance Before: $" + String.format("%.2f", beforeBalance));
+                bw.write("\nAccount Balance After:  $" + String.format("%.2f", afterBalance));
+            }
 
             bw.write("\n==============================\n");
 
@@ -91,6 +99,5 @@ public class ReceiptGenerator {
             System.out.println("Error writing receipt: " + e.getMessage());
         }
     }
-
 }
 

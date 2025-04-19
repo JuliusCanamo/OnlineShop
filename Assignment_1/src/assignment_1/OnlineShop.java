@@ -67,6 +67,9 @@ public class OnlineShop {
                     case "E":
                         showOrderHistory(user);
                         break;
+                    case "F":
+                        showBalance(user);
+                        break;
                     case "X":
                         System.out.println("\nTHANK YOU FOR SHOPPING WITH US!");
                         System.exit(0);
@@ -107,6 +110,9 @@ public class OnlineShop {
                     case "E":
                         System.out.println("No order history available, as you are not logged in.");
                         break;
+                    case "F":
+                        showBalance(null);
+                        break;
                     case "X":
                         System.out.println("\nTHANK YOU FOR SHOPPING WITH US!");
                         System.exit(0);
@@ -128,6 +134,7 @@ public class OnlineShop {
         System.out.println("C: View Category");
         System.out.println("D: View Cart");
         System.out.println("E: View Order History");
+        System.out.println("F: View Balance");
         System.out.println("X: Exit System");
     }
 
@@ -178,6 +185,7 @@ public class OnlineShop {
 // Method: To view cart,Checkout / continue shopping, Get receipt, Clear cart
     private void viewCart(Scanner scanner, Cart ct, Customer user) {
         ct.viewCart();
+        Discounts discount = new Discounts();
 
         if (!ct.getCartItems().isEmpty()) {
             System.out.println("Would you like to (1) Checkout or (2) Continue Shopping?");
@@ -186,23 +194,38 @@ public class OnlineShop {
 
             if (actionChoice.equals("1")) { // Checkout
                 if (user != null) {
-                    user.saveOrder(ct); // Save to memory
-                    System.out.println("Would you like to save a receipt? (yes/no)");
+                    Money money = user.getMoney();
+                    double accountBalance = money.getBalance();
+                    double cartTotal = discount.discountTotal(ct);
 
-                    String receiptChoice = scanner.nextLine().trim();
-                    checkExit(receiptChoice);
-                    if (receiptChoice.equalsIgnoreCase("yes")) {
+                    if (accountBalance >= cartTotal) {
+                        // Deduct balance and save order
+                        money.setBalance(accountBalance - cartTotal);
+                        user.saveOrder(ct); // Save to memory
 
-                        ReceiptGenerator.writeCartSummary(ct);
-                        user.getOrderHistory().saveOrderToFile(user.getName(), ct); // Save to file
+                        System.out.println("Would you like to save a receipt? (yes/no)");
+                        String receiptChoice = scanner.nextLine().trim();
+                        checkExit(receiptChoice);
+
+                        if (receiptChoice.equalsIgnoreCase("yes")) {
+                            ReceiptGenerator.writeCartSummary(ct, user);
+                            user.getOrderHistory().saveOrderToFile(user.getName(), ct); // Save to file
+                        }
+
+                        ct.clearCart(); // Clear cart after checkout
+                        System.out.println("Thank you for your purchase!");
+                    } 
+                    else {
+                        System.out.printf("Insufficient balance! You need $%.2f more.%n", cartTotal - accountBalance);
+                        System.out.println("Please insert more funds via the balance menu (Option F).");
                     }
-                } else {
+
+                } 
+                    else {
                     System.out.println("You are not logged in, so the order cannot be saved.");
                 }
-
-                ct.clearCart(); // Clear cart after checkout
-                System.out.println("Thank you for your purchase!");
-            } else {
+            } 
+            else {
                 System.out.println("Returning to main menu to continue shopping.");
             }
         }
@@ -225,5 +248,14 @@ public class OnlineShop {
             System.exit(0);
         }
     }
-
+    
+    private void showBalance(Customer user){
+        if (user != null) {
+            Money wallet = user.getMoney();
+            double updatedBalance = wallet.insertAmount();
+            System.out.printf("Your current balance is: $%.2f%n", updatedBalance);
+        } else {
+            System.out.println("No order history available, as you are not logged in.");
+        }
+    }
 }
