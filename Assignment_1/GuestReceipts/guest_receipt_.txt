@@ -1,0 +1,5 @@
+Guest Receipt
+------------------------
+SlateForm Jeans | PANTS | M   | $49.99
+Total: $49.99
+------------------------
