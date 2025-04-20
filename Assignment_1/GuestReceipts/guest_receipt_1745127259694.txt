@@ -1,0 +1,7 @@
+Guest Receipt
+------------------------
+PulseGear Jacket | ACTIVEWEAR | L   | $79.99
+LayerCore Graphic Hoodie | HOODIES | XL   | $59.99
+DryTone Tech Tee | ACTIVEWEAR | M   | $24.99
+Total: $164.97
+------------------------

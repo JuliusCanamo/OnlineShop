@@ -1,0 +1,11 @@
+====== Purchase Receipt ======
+ PRODUCT NAME: NoirThread Midi Dress
+ CATEGORY: DRESSES
+ SIZE: L  
+ COST: $79.99
+
+Total Amount: $79.99
+
+Account Balance Before: $200.50
+Account Balance After:  $120.51
+==============================

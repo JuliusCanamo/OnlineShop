@@ -4,6 +4,7 @@
  */
 package assignment_1;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -11,7 +12,7 @@ public class OnlineShop {
 
     private UserManager userManager = new UserManager();
 
-    public void ShopInterface() {
+    public void ShopInterface() throws FileNotFoundException {
 
         //So I changed it since main got away too long and messy
         //All main handles will be in App :)
@@ -44,6 +45,7 @@ public class OnlineShop {
         // If user wants to log in
         if (answer.equalsIgnoreCase("yes")) {
             Customer user = userManager.loginOrRegister(scanner);
+            user.getMoney().UserBalance(user);
 
             // After login/register, continue to the shopping interface
             while (shop) {
@@ -67,7 +69,13 @@ public class OnlineShop {
                         break;
                     case "B":
                         showCategories(scanner, storage);
-                        break;
+                         System.out.println("WOULD YOU LIKE TO ADD AN ITEM TO THE CART? PLEASE ENTER ('YES'/ 'NO')");
+                        choice = scanner.nextLine().trim();
+                        checkExit(choice);
+
+                        if (choice.equalsIgnoreCase("yes")) {
+                            addToCart(scanner, storage, ct);
+                        }
                     case "C":
                         showDiscounts();
                         break;
@@ -94,6 +102,7 @@ public class OnlineShop {
         else { // If user does not want to log in
             Customer guest = new Customer("Guest", "Guest"); //Guest login, password
             System.out.println("Proceeding as guest user...");
+            guest.getMoney().UserBalance(guest);
 
             while (shop) {
                 showMenu();
@@ -224,6 +233,7 @@ public class OnlineShop {
                     if (accountBalance >= cartTotal) {
                         // Deduct balance and save order
                         money.setBalance(accountBalance - cartTotal);
+                        user.getMoney().saveUserBalance(user);
 
                         System.out.println("\nWOULD YOU LIKE TO SAVE A RECEIPT? ('YES'/'NO')");
                         String receiptChoice = scanner.nextLine().trim();
@@ -281,6 +291,9 @@ public class OnlineShop {
              
             double updatedBalance = wallet.insertAmount();
             System.out.printf("YOUR CURRENT BALANCE IS: $%.2f%n", updatedBalance);
+            
+            user.getMoney().saveUserBalance(user);
+            
         } else {
             System.out.println("No order history available, as you are not logged in.");
         }
