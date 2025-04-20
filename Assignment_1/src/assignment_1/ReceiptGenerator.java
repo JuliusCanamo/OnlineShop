@@ -99,5 +99,32 @@ public class ReceiptGenerator {
             System.out.println("Error writing receipt: " + e.getMessage());
         }
     }
+    
+    //Method: Save guest receipt
+    public static void saveGuestReceipt(Cart cart) {
+        String folderName = "GuestReceipts";
+        File receiptFolder = new File(folderName);
+
+        if (!receiptFolder.exists()) {
+            receiptFolder.mkdirs(); // Create folder if it doesn't exist
+        }
+
+        String fileName = "guest_receipt_" + System.currentTimeMillis() + ".txt";
+        File receiptFile = new File(receiptFolder, fileName);
+
+        try (FileWriter writer = new FileWriter(receiptFile)) {
+            writer.write("Guest Receipt\n");
+            writer.write("------------------------\n");
+            for (Products p : cart.getCartItems()) {
+                writer.write(p.getItemName() + " | " + p.getItemType() + " | " +
+                             p.getItemSize() + " | $" + p.getItemPrice() + "\n");
+            }
+            writer.write("Total: $" + String.format("%.2f", cart.getTotalCost()) + "\n");
+            writer.write("------------------------\n");
+            System.out.println("Receipt saved as: " + fileName);
+        } catch (IOException e) {
+            System.out.println("Failed to save guest receipt: " + e.getMessage());
+        }
+    }
 }
 

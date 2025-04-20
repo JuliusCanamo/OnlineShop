@@ -25,10 +25,21 @@ public class OnlineShop {
         System.out.println(" WELCOME TO COLLECTION WORLD ");
         System.out.println("-----------------------------");
 
+        System.out.println("Please enter 'x' at any stage to exit the program.\n");
         // --- Ask if user wants to login or not ---
-        System.out.println("Would you like to log in? (yes/no)");
-        String answer = scanner.nextLine().toUpperCase();
-        checkExit(answer);
+        //This will continue asking until correct input or X to exit
+        String answer = "";
+        while (true) {
+            System.out.println("Would you like to log in? (yes/no)");
+            answer = scanner.nextLine().trim().toLowerCase();
+            checkExit(answer);
+
+            if (answer.equals("yes") || answer.equals("no")) {
+                break;
+            } else {
+                System.out.println("Invalid input. Please enter 'yes' or 'no'.");
+            }
+        }
 
         // If user wants to log in
         if (answer.equalsIgnoreCase("yes")) {
@@ -50,8 +61,7 @@ public class OnlineShop {
 
                         if (choice.equalsIgnoreCase("yes")) {
                             addToCart(scanner, storage, ct);
-                        } else if(choice != ("yes") || choice !=("no"))
-                        {
+                        } else if (choice != ("yes") || choice != ("no")) {
                             System.out.println("Invalid input, Please enter yes or no!");
                         }
                         break;
@@ -81,6 +91,9 @@ public class OnlineShop {
             }
         } // If user does not want to log in
         else {
+            Customer guest = new Customer("Guest", "Guest"); //Guest login, password
+            System.out.println("Proceeding as guest user...");
+
             while (shop) {
                 showMenu();
                 menu = scanner.nextLine().toUpperCase();
@@ -105,13 +118,13 @@ public class OnlineShop {
                         showCategories(scanner, storage);
                         break;
                     case "D":
-                        viewCart(scanner, ct, null); // No user logged in
+                        viewCart(scanner, ct, guest); // No user logged in
                         break;
                     case "E":
                         System.out.println("No order history available, as you are not logged in.");
                         break;
                     case "F":
-                        showBalance(null);
+                        showBalance(guest);
                         break;
                     case "X":
                         System.out.println("\nTHANK YOU FOR SHOPPING WITH US!");
@@ -208,24 +221,26 @@ public class OnlineShop {
                         checkExit(receiptChoice);
 
                         if (receiptChoice.equalsIgnoreCase("yes")) {
-                            ReceiptGenerator.writeCartSummary(ct, user);
-                            user.getOrderHistory().saveOrderToFile(user.getName(), ct); // Save to file
+
+                            if (user.getName().equalsIgnoreCase("Guest")) {
+                                ReceiptGenerator.saveGuestReceipt(ct); // <-- New method call
+                            } else {
+                                ReceiptGenerator.writeCartSummary(ct, user);
+                                user.getOrderHistory().saveOrderToFile(user.getName(), ct);
+                            }
                         }
 
                         ct.clearCart(); // Clear cart after checkout
                         System.out.println("Thank you for your purchase!");
-                    } 
-                    else {
+                    } else {
                         System.out.printf("Insufficient balance! You need $%.2f more.%n", cartTotal - accountBalance);
                         System.out.println("Please insert more funds via the balance menu (Option F).");
                     }
 
-                } 
-                    else {
+                } else {
                     System.out.println("You are not logged in, so the order cannot be saved.");
                 }
-            } 
-            else {
+            } else {
                 System.out.println("Returning to main menu to continue shopping.");
             }
         }
@@ -248,8 +263,8 @@ public class OnlineShop {
             System.exit(0);
         }
     }
-    
-    private void showBalance(Customer user){
+
+    private void showBalance(Customer user) {
         if (user != null) {
             Money wallet = user.getMoney();
             double updatedBalance = wallet.insertAmount();
