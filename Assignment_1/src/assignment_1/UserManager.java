@@ -31,7 +31,7 @@ public class UserManager {
             users.put(name, newCustomer);
             // Save the user to a file
             saveUserToMasterFile(newCustomer);
-            System.out.println("Registration successful for user: " + name + "Logging in... \n");
+            System.out.println("Registration successful for user: " + name + " Logging in... \n");
             return true;
 
         } else {

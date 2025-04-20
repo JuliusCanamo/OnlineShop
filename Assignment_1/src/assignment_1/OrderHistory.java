@@ -18,34 +18,34 @@ import java.util.List;
 
 public class OrderHistory {
 
-    private List<Cart> pastOrders;
+//    private List<Cart> pastOrders;
 
-    public OrderHistory() {
+//    public OrderHistory() {
+//
+//        pastOrders = new ArrayList<>();
+//    }
 
-        pastOrders = new ArrayList<>();
-    }
+//    public void addOrder(Cart originalCart) {
+//        Cart saveCart = new Cart();
+//        for (Products p : originalCart.getCartItems()) {
+//            saveCart.addToCart(p);
+//        }
+//        pastOrders.add(saveCart);
+//    }
 
-    public void addOrder(Cart originalCart) {
-        Cart saveCart = new Cart();
-        for (Products p : originalCart.getCartItems()) {
-            saveCart.addToCart(p);
-        }
-        pastOrders.add(saveCart);
-    }
-
-    public void printOrderHistory() {
-        if (pastOrders.isEmpty()) {
-        System.out.println("No past orders found.");
-    } else {
-        System.out.println("----- Past Orders -----");
-        int orderNumber = 1;
-        for (Cart cart : pastOrders) {
-            System.out.println("\nOrder #" + orderNumber++);
-            cart.viewCart();  // this prints the cart content and total
-            System.out.println("-----------------------");
-        }
-    }
-    }
+//    public void printOrderHistory() {
+//        if (pastOrders.isEmpty()) {
+//        System.out.println("No past orders found.");
+//    } else {
+//        System.out.println("----- Past Orders -----");
+//        int orderNumber = 1;
+//        for (Cart cart : pastOrders) {
+//            System.out.println("\nOrder #" + orderNumber++);
+//            cart.viewCart();  // this prints the cart content and total
+//            System.out.println("-----------------------");
+//        }
+//    }
+//    }
     //Save cart to file for user
 
      public void saveOrderToFile(String userName, Cart cart) {
@@ -70,10 +70,10 @@ public class OrderHistory {
             System.out.println("Failed to save order to file: " + e.getMessage());
         }
     }
-    // Load past orders from file for user
-
-    public void loadOrdersFromFile(String userName) {
-        pastOrders.clear(); // avoid duplicate loading
+     
+     
+   // --- Load and print order history directly from files (avoids duplication) ---
+    public void printOrderHistory(String userName) {
         File userFolder = new File("OrderHistory/" + userName);
 
         if (!userFolder.exists() || !userFolder.isDirectory()) {
@@ -87,6 +87,8 @@ public class OrderHistory {
             return;
         }
 
+        System.out.println("----- Past Orders -----");
+        int orderNumber = 1;
         for (File file : orderFiles) {
             Cart cart = new Cart();
             try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -101,7 +103,10 @@ public class OrderHistory {
                         cart.addToCart(new Products(pname, category, size, price));
                     }
                 }
-                pastOrders.add(cart);
+
+                System.out.println("\nOrder #" + orderNumber++);
+                cart.viewCart();
+                System.out.println("-----------------------");
             } catch (IOException e) {
                 System.out.println("Error reading file: " + file.getName() + " - " + e.getMessage());
             }

@@ -8,7 +8,6 @@ package assignment_1;
  *
  * @author larai
  */
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -16,43 +15,17 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-
 public class ReceiptGenerator {
 
-//    public static void writeCartSummary(String filename, Cart cart) {
-//        
-//        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filename))) {
-//            bw.write("====== Purchase Receipt ======\n");
-//
-//            for (Products p : cart.getCartItems()) {
-//                bw.write(p.printInfo() + "\n");  
-//            }
-//            
-//            double total=cart.getTotalCost();
-//            
-//            Discounts discounts =new Discounts();
-//            double discountedTotal=discounts.discountTotal(cart);
-//            
-//            bw.write("\nTotal Amount: $" + String.format("%.2f", total));
-//            
-//            //If Discount Applied
-//            if (cart.getCartItems().size() >= 3) {
-//                double discountAmount = total - discountedTotal;
-//                bw.write("\nDiscount (20%): -$" + String.format("%.2f", discountAmount));
-//                bw.write("\nDiscounted Total: $" + String.format("%.2f", discountedTotal));
-//            }
-//            
-//            bw.write("\n==============================\n");
-//
-//            System.out.println("Receipt saved to: " + filename);
-//        } catch (IOException e) {
-//            System.out.println("Error writing receipt: " + e.getMessage());
-//        }
-//    }
-//    
     public static void writeCartSummary(Cart cart, Customer user) {
-        String folderName = "Receipts";
-        File receiptDir = new File(folderName);
+
+        if (user == null) {
+            System.out.println("User not provided. Cannot save personalized receipt.");
+            return;
+        }
+
+        String folderPath = "Receipts/" + user.getName();
+        File receiptDir = new File(folderPath);
 
         // Create the Receipts folder if it doesn't exist
         if (!receiptDir.exists()) {
@@ -60,15 +33,15 @@ public class ReceiptGenerator {
         }
 
         // Full path: Receipts/filename.txt
-        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        String filename = "receipt_" + timestamp + ".txt";
+        int receiptNumber = receiptDir.list().length + 1;
+        String filename = "receipt_" + receiptNumber + ".txt";
         File receiptFile = new File(receiptDir, filename);
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(receiptFile))) {
             bw.write("====== Purchase Receipt ======\n");
 
             for (Products p : cart.getCartItems()) {
-                bw.write(p.printInfo() + "\n");  
+                bw.write(p.printInfo() + "\n");
             }
 
             double total = cart.getTotalCost();
@@ -82,14 +55,12 @@ public class ReceiptGenerator {
                 bw.write("\nDiscount (20%): -$" + String.format("%.2f", discountAmount));
                 bw.write("\nDiscounted Total: $" + String.format("%.2f", discountedTotal));
             }
-            
-            if(user != null){
-                 double beforeBalance = user.getMoney().getBalance() + discountedTotal;
-                double afterBalance = user.getMoney().getBalance(); 
 
-                bw.write("\n\nAccount Balance Before: $" + String.format("%.2f", beforeBalance));
-                bw.write("\nAccount Balance After:  $" + String.format("%.2f", afterBalance));
-            }
+            double beforeBalance = user.getMoney().getBalance() + discountedTotal;
+            double afterBalance = user.getMoney().getBalance();
+
+            bw.write("\n\nAccount Balance Before: $" + String.format("%.2f", beforeBalance));
+            bw.write("\nAccount Balance After:  $" + String.format("%.2f", afterBalance));
 
             bw.write("\n==============================\n");
 
@@ -99,7 +70,7 @@ public class ReceiptGenerator {
             System.out.println("Error writing receipt: " + e.getMessage());
         }
     }
-    
+
     //Method: Save guest receipt
     public static void saveGuestReceipt(Cart cart) {
         String folderName = "GuestReceipts";
@@ -109,15 +80,15 @@ public class ReceiptGenerator {
             receiptFolder.mkdirs(); // Create folder if it doesn't exist
         }
 
-        String fileName = "guest_receipt_" + System.currentTimeMillis() + ".txt";
+        String fileName = "guest_receipt_.txt";
         File receiptFile = new File(receiptFolder, fileName);
 
         try (FileWriter writer = new FileWriter(receiptFile)) {
             writer.write("Guest Receipt\n");
             writer.write("------------------------\n");
             for (Products p : cart.getCartItems()) {
-                writer.write(p.getItemName() + " | " + p.getItemType() + " | " +
-                             p.getItemSize() + " | $" + p.getItemPrice() + "\n");
+                writer.write(p.getItemName() + " | " + p.getItemType() + " | "
+                        + p.getItemSize() + " | $" + p.getItemPrice() + "\n");
             }
             writer.write("Total: $" + String.format("%.2f", cart.getTotalCost()) + "\n");
             writer.write("------------------------\n");
@@ -127,4 +98,3 @@ public class ReceiptGenerator {
         }
     }
 }
-

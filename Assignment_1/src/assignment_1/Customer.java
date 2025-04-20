@@ -42,10 +42,13 @@ public class Customer {
     
     // Display the order history of the customer
     public void saveOrder(Cart cart) {
-        orderHistory.addOrder(cart);
         orderHistory.saveOrderToFile(name, cart);
     }
     
+     public void viewOrderHistory() {
+        orderHistory.printOrderHistory(name);
+    }
+     
     public void setPassword(String password){
         this.password=password;
     }
