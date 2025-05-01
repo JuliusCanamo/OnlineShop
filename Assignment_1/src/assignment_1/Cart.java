@@ -52,10 +52,14 @@ public class Cart {
 
         Products selectedProduct = availableProducts.get(itemNumber - 1); // 1-based index
         cart[count] = selectedProduct;
-        cost += selectedProduct.getItemPrice();
-        count++;
+        
+        
+        //cost += selectedProduct.getItemPrice();
+        //count++;
 
-        System.out.println(selectedProduct.getItemName() + " has been added to cart.");
+       // System.out.println(selectedProduct.getItemName() + " has been added to cart.");
+
+    
     }
 
     public void viewCart() {

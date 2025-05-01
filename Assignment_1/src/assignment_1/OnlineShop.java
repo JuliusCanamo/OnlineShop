@@ -62,20 +62,22 @@ public class OnlineShop {
                         checkExit(choice);
 
                         if (choice.equalsIgnoreCase("yes")) {
-                            addToCart(scanner, storage, ct);
+                            addToCart(scanner, storage.getInventory(), ct);
                         } else if (choice != ("yes") || choice != ("no")) {
                             System.out.println("Invalid input, Please enter yes or no!");
                         }
                         break;
                     case "B":
-                        showCategories(scanner, storage);
-                         System.out.println("WOULD YOU LIKE TO ADD AN ITEM TO THE CART? PLEASE ENTER ('YES'/ 'NO')");
+                        //showCategories(scanner, storage);
+                        List<Products> filtered = showCategories(scanner, storage);
+                        System.out.println("WOULD YOU LIKE TO ADD AN ITEM TO THE CART? PLEASE ENTER ('YES'/ 'NO')");
                         choice = scanner.nextLine().trim();
                         checkExit(choice);
 
                         if (choice.equalsIgnoreCase("yes")) {
-                            addToCart(scanner, storage, ct);
+                            addToCart(scanner, filtered, ct);
                         }
+                        break;
                     case "C":
                         showDiscounts();
                         break;
@@ -87,7 +89,7 @@ public class OnlineShop {
                         break;
                     case "F":
                         showOrderHistory(user);
-                        
+
                         break;
                     case "X":
                         System.out.println("\nTHANK YOU FOR SHOPPING WITH US!");
@@ -98,8 +100,7 @@ public class OnlineShop {
                         break;
                 }
             }
-        }
-        else { // If user does not want to log in
+        } else { // If user does not want to log in
             Customer guest = new Customer("Guest", "Guest"); //Guest login, password
             System.out.println("Proceeding as guest user...");
             guest.getMoney().UserBalance(guest);
@@ -118,17 +119,19 @@ public class OnlineShop {
                         checkExit(choice);
 
                         if (choice.equalsIgnoreCase("yes")) {
-                            addToCart(scanner, storage, ct);
+                            addToCart(scanner, storage.getInventory(), ct);
+                        } else if (choice != ("yes") || choice != ("no")) {
+                            System.out.println("Invalid input, Please enter yes or no!");
                         }
                         break;
                     case "B":
-                        showCategories(scanner, storage);
-                         System.out.println("WOULD YOU LIKE TO ADD AN ITEM TO THE CART? PLEASE ENTER ('YES'/ 'NO')");
+                        List<Products> filtered = showCategories(scanner, storage);
+                        System.out.println("WOULD YOU LIKE TO ADD AN ITEM TO THE CART? PLEASE ENTER ('YES'/ 'NO')");
                         choice = scanner.nextLine().trim();
                         checkExit(choice);
 
                         if (choice.equalsIgnoreCase("yes")) {
-                            addToCart(scanner, storage, ct);
+                            addToCart(scanner, filtered, ct);
                         }
                         break;
                     case "C":
@@ -171,13 +174,13 @@ public class OnlineShop {
     }
 
 // Method: To add to cart based on number selected
-    private void addToCart(Scanner scanner, Inventory storage, Cart ct) {
+    private void addToCart(Scanner scanner, List<Products> items, Cart ct) {
         System.out.println("ENTER THE NUMBER OF THE ITEM YOU WOULD LIKE TO ADD: ");
 
         try {
             int itemNumber = Integer.parseInt(scanner.nextLine().trim());
 
-            List<Products> items = storage.getInventory();
+           // List<Products> items = storage.getInventory();
             if (itemNumber >= 1 && itemNumber <= items.size()) {
                 Products selected = items.get(itemNumber - 1); // Adjust for 0-based index
                 ct.addToCart(selected);
@@ -188,6 +191,7 @@ public class OnlineShop {
         } catch (NumberFormatException e) {
             System.out.println("PLEASE ENTER A VALID NUMBER.");
         }
+        
     }
 
 // Method: To show discounts
@@ -197,7 +201,7 @@ public class OnlineShop {
     }
 
 // Method: To show category options
-    private void showCategories(Scanner scanner, Inventory storage) {
+    private List<Products> showCategories(Scanner scanner, Inventory storage) {
         System.out.println("Choose A Category:\n"
                 + "-PANTS\n"
                 + "-SHORTS\n"
@@ -210,8 +214,21 @@ public class OnlineShop {
                 + "-FOOTWEAR");
         String type = scanner.nextLine().trim().toUpperCase();
         checkExit(type);
+
         Category cat = new Category();
-        cat.printType(type, storage.getInventory());
+        List<Products> filtered = cat.getFilteredProducts(type, storage.getInventory());
+
+        if (filtered.isEmpty()) {
+            System.out.println("Nothing under your selected category.");
+        } else {
+            int itemNumber = 1;
+            for (Products p : filtered) {
+                System.out.println(itemNumber + ") " + p.printInfo());
+                itemNumber++;
+            }
+        }
+
+        return filtered;
     }
 
 // Method: To view cart,Checkout / continue shopping, Get receipt, Clear cart
@@ -242,7 +259,7 @@ public class OnlineShop {
                         if (receiptChoice.equalsIgnoreCase("yes")) {
 
                             if (user.getName().equalsIgnoreCase("Guest")) {
-                                ReceiptGenerator.saveGuestReceipt(ct); 
+                                ReceiptGenerator.saveGuestReceipt(ct);
                             } else {
                                 ReceiptGenerator.writeCartSummary(ct, user);
                                 user.getOrderHistory().saveOrderToFile(user.getName(), ct);
@@ -284,16 +301,16 @@ public class OnlineShop {
 
     private void showBalance(Customer user) {
         if (user != null) {
-           
+
             Money wallet = user.getMoney();
-            double currentBalance=wallet.getBalance();
+            double currentBalance = wallet.getBalance();
             System.out.printf("YOUR CURRENT BALANCE IS: $%.2f%n", currentBalance);
-             
+
             double updatedBalance = wallet.insertAmount();
             System.out.printf("YOUR CURRENT BALANCE IS: $%.2f%n", updatedBalance);
-            
+
             user.getMoney().saveUserBalance(user);
-            
+
         } else {
             System.out.println("No order history available, as you are not logged in.");
         }

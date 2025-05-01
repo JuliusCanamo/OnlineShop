@@ -4,6 +4,7 @@
  */
 package assignment_1;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,9 +31,13 @@ public class Category {
             System.out.println("Products inside '" + select + "'");
 
             boolean match = false;
+            int itemNumber = 1; 
+
             for (Products pp : product) {
                 if (pp != null && pp.getItemType() == select) {
-                    System.out.println(pp.printInfo());
+                    //System.out.println(pp.printInfo());
+                    System.out.println(itemNumber + ") " + pp.printInfo());
+                itemNumber++;
                     match = true;
                 }
             }
@@ -53,4 +58,18 @@ public class Category {
                     + "FOOTWEAR");
         }
     }
+public List<Products> getFilteredProducts(String tp, List<Products> products) {
+    List<Products> filtered = new ArrayList<>();
+    try {
+        CategoryType select = CategoryType.valueOf(tp.toUpperCase());
+        for (Products p : products) {
+            if (p != null && p.getItemType() == select) {
+                filtered.add(p);
+            }
+        }
+    } catch (IllegalArgumentException e) {
+        System.out.println("Invalid category.");
+    }
+    return filtered;
+}
 }
