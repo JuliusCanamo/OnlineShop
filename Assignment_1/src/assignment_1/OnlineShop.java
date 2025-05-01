@@ -20,7 +20,6 @@ public class OnlineShop {
         Scanner scanner = new Scanner(System.in);
         Inventory storage = new Inventory();
         Cart ct = new Cart();
-        boolean shop = true;
 
         System.out.println("-----------------------------");
         System.out.println(" WELCOME TO COLLECTION WORLD ");
@@ -48,7 +47,7 @@ public class OnlineShop {
             user.getMoney().UserBalance(user);
 
             // After login/register, continue to the shopping interface
-            while (shop) {
+            while (true) {
                 showMenu();
                 menu = scanner.nextLine().toUpperCase();
                 checkExit(menu);
@@ -105,7 +104,7 @@ public class OnlineShop {
             System.out.println("Proceeding as guest user...");
             guest.getMoney().UserBalance(guest);
 
-            while (shop) {
+            while (true) {
                 showMenu();
                 menu = scanner.nextLine().toUpperCase();
                 checkExit(menu);
@@ -120,8 +119,10 @@ public class OnlineShop {
 
                         if (choice.equalsIgnoreCase("yes")) {
                             addToCart(scanner, storage.getInventory(), ct);
-                        } else if (choice != ("yes") || choice != ("no")) {
-                            System.out.println("Invalid input, Please enter yes or no!");
+                        } else if (choice.equalsIgnoreCase("no")) {
+                            break;
+                        } else {
+                            System.out.println("Invalid input, Please enter YES or NO!");
                         }
                         break;
                     case "B":
@@ -132,6 +133,8 @@ public class OnlineShop {
 
                         if (choice.equalsIgnoreCase("yes")) {
                             addToCart(scanner, filtered, ct);
+                        } else {
+                            System.out.println("(Invalid input, Please enter YES or NO!)");
                         }
                         break;
                     case "C":
@@ -180,7 +183,7 @@ public class OnlineShop {
         try {
             int itemNumber = Integer.parseInt(scanner.nextLine().trim());
 
-           // List<Products> items = storage.getInventory();
+            // List<Products> items = storage.getInventory();
             if (itemNumber >= 1 && itemNumber <= items.size()) {
                 Products selected = items.get(itemNumber - 1); // Adjust for 0-based index
                 ct.addToCart(selected);
@@ -191,7 +194,7 @@ public class OnlineShop {
         } catch (NumberFormatException e) {
             System.out.println("PLEASE ENTER A VALID NUMBER.");
         }
-        
+
     }
 
 // Method: To show discounts
@@ -202,7 +205,7 @@ public class OnlineShop {
 
 // Method: To show category options
     private List<Products> showCategories(Scanner scanner, Inventory storage) {
-        System.out.println("Choose A Category:\n"
+        System.out.println("Enter the Category name:\n"
                 + "-PANTS\n"
                 + "-SHORTS\n"
                 + "-HOODIES\n"
@@ -237,9 +240,16 @@ public class OnlineShop {
         Discounts discount = new Discounts();
 
         if (!ct.getCartItems().isEmpty()) {
-            System.out.println("\nWOULD YOU LIKE TO (1) CHECKOUT OR (2) CONTINUE SHOPPING?");
-            String actionChoice = scanner.nextLine().trim();
-            checkExit(actionChoice);
+            String actionChoice;
+            do {
+                System.out.println("\nWOULD YOU LIKE TO (1) CHECKOUT OR (2) CONTINUE SHOPPING?");
+                actionChoice = scanner.nextLine().trim();
+                checkExit(actionChoice);
+
+                if (!actionChoice.equals("1") && !actionChoice.equals("2")) {
+                    System.out.println("INVALID INPUT. PLEASE ENTER '1' TO CHECKOUT OR '2' TO CONTINUE SHOPPING.");
+                }
+            } while (!actionChoice.equals("1") && !actionChoice.equals("2"));
 
             if (actionChoice.equals("1")) { // Checkout
                 if (user != null) {
@@ -264,13 +274,15 @@ public class OnlineShop {
                                 ReceiptGenerator.writeCartSummary(ct, user);
                                 user.getOrderHistory().saveOrderToFile(user.getName(), ct);
                             }
+                        } else {
+                            System.out.println("Invalid input, Please enter 'YES' or 'NO'");
                         }
 
                         ct.clearCart(); // Clear cart after checkout
                         System.out.println("THANK YOU FOR SHOPPING AT COLLECTION WORLD!");
                     } else {
                         System.out.printf("INSUFFICIENT BALANCE! You need $%.2f more.%n", cartTotal - accountBalance);
-                        System.out.println("Please insert more funds via the balance menu (Option F).");
+                        System.out.println("Please insert more funds via the balance menu (Option D).");
                     }
 
                 } else {
@@ -292,7 +304,7 @@ public class OnlineShop {
     }
 
     //Method: To exit at any stage
-    private void checkExit(String input) {
+    public static void checkExit(String input) {
         if (input.equalsIgnoreCase("X")) {
             System.out.println("\nTHANK YOU FOR SHOPPING WITH US!");
             System.exit(0);

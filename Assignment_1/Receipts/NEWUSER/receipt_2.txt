@@ -1,11 +1,11 @@
 ====== Purchase Receipt ======
- PRODUCT NAME: SlateForm Jeans
+ PRODUCT NAME: AxisCut Jeans
  CATEGORY: PANTS
  SIZE: M  
  COST: $49.99
 
 Total Amount: $49.99
 
-Account Balance Before: $100.00
-Account Balance After:  $50.01
+Account Balance Before: $404.51
+Account Balance After:  $354.52
 ==============================

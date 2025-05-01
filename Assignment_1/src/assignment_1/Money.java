@@ -44,56 +44,42 @@ public class Money {
         Scanner scanner = new Scanner(System.in);
         DecimalFormat format = new DecimalFormat("#0.00");
 
-        System.out.println("Would you like to insert money into your account? (yes/no)");
+        System.out.println("WOULD YOU LIKE TO INSERT MONEY INTO YOUR ACCOUNT? (YES/NO)");
         String query = scanner.nextLine().trim();
+        OnlineShop.checkExit(query);
 
         while (query.equalsIgnoreCase("yes")) {
-            System.out.println("How much would you like to insert?");
-            amount = scanner.nextDouble();
-            scanner.nextLine();
+            System.out.println("HOW MUCH WOULD YOU LIKE TO INSERT?");
+            String input = scanner.nextLine().trim();
+            OnlineShop.checkExit(input);
+
+            try {
+                amount = Double.parseDouble(input);
+            } catch (NumberFormatException e) {
+                System.out.println(" INVALID AMOUNT. PLEASE ENTER A NUMBER.");
+                continue;  // Ask again
+            }
 
             if (depositMoney(amount)) {
                 System.out.println("Current Balance $" + format.format(this.balance));
             } else {
-                System.out.println("Current Balance $" + format.format(this.balance));
+                System.out.println(" AMOUNT MUST BE POSITIVE.");
             }
-            System.out.println("Would you like to continue to insert money into your account? (yes/no)");
-            query = scanner.nextLine().trim();
+
+            do {
+                System.out.println("WOULD YOU LIKE TO CONTINUE TO INSERT MONEY INTO YOUR ACCOUNT? (YES/NO)");
+                query = scanner.nextLine().trim();
+                OnlineShop.checkExit(query);
+
+                if (!query.equalsIgnoreCase("yes") && !query.equalsIgnoreCase("no")) {
+                    System.out.println("INVALID INPUT. PLEASE TYPE 'YES' OR 'NO'.");
+                }
+            } while (!query.equalsIgnoreCase("yes") && !query.equalsIgnoreCase("no"));
+
         }
         return this.balance;
     }
 
-//    public void saveUserBalance(Customer user) {
-//
-//        if (user == null) {
-//            System.out.println("User not provided. Cannot save balance.");
-//            return;
-//        }
-//
-//        String folderPath = "Balance/" + user.getName().toUpperCase();
-//        File balanceDir = new File(folderPath);
-//
-//        // Create the Balance folder if it doesn't exist
-//         if (!balanceDir.exists()) {
-//            boolean created = balanceDir.mkdirs();
-//            if (!created) {
-//                System.out.println("Failed to create balance directory for user.");
-//                return;
-//            }
-//        }
-//
-//        // Full path: Balance/filename.txt
-//        String filename = "balance_" + user.getName() + ".txt";
-//        File balanceFile = new File(balanceDir, filename);
-//
-//        try (BufferedWriter bw = new BufferedWriter(new FileWriter(balanceFile))) {
-//            bw.write(String.format("%.2f", this.balance));
-//            System.out.println("Balance has been saved to: " + balanceFile.getAbsolutePath());
-//
-//        } catch (IOException e) {
-//            System.out.println("Error saving balance: " + e.getMessage());
-//        }
-//    }
     public void saveUserBalance(Customer user) {
         if (user == null) {
             System.out.println("User not provided. Cannot save balance.");
@@ -121,44 +107,10 @@ public class Money {
         }
     }
 
-//    public void UserBalance(Customer user) {
-//
-//        if (user == null) {
-//            System.out.println("User not provided. Cannot save balance.");
-//            return;
-//        }
-//
 //        /*Code below implements the structure from getting the saved balance from the user
 //        and sets the saved balance from the previous session as its current
 //        most of the structure of the code was found from - 
 //        https://www.w3schools.com/java/java_files_read.asp*/
-//        String folderPath = "Balance/" + user.getName().toUpperCase();
-//        File balanceDir = new File(folderPath);
-//
-//        if (!balanceDir.exists()) {
-//            boolean created = balanceDir.mkdirs();
-//            if (!created) {
-//                System.out.println("Failed to create balance directory for user.");
-//                return;
-//            }
-//        } else {
-//
-//            String filename = "balance_" + user.getName() + ".txt";
-//            File balanceFile = new File(balanceDir, filename);
-//
-//            try (Scanner myReader = new Scanner(balanceFile)) {
-//                myReader.hasNextLine();
-//
-//                String savedBalance = myReader.nextLine().trim();
-//                double loadTheBalance = Double.parseDouble(savedBalance);
-//
-//                user.getMoney().setBalance(loadTheBalance);
-//
-//            } catch (IOException e) {
-//                //System.out.println("Error saving balance: " + e.getMessage());
-//            }
-//        }
-//    }
     public void UserBalance(Customer user) {
         if (user == null) {
             System.out.println("User not provided. Cannot load balance.");

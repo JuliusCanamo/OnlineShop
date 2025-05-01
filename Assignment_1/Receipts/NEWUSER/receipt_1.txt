@@ -1,0 +1,15 @@
+====== Purchase Receipt ======
+ PRODUCT NAME: LuxeFade Crewneck Sweatshirt
+ CATEGORY: SWEATSHIRTS
+ SIZE: L  
+ COST: $45.50
+ PRODUCT NAME: ModLoaf Loafers
+ CATEGORY: FOOTWEAR
+ SIZE: 10
+ COST: $59.99
+
+Total Amount: $105.49
+
+Account Balance Before: $510.00
+Account Balance After:  $404.51
+==============================

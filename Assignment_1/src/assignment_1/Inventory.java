@@ -5,15 +5,11 @@
 package assignment_1;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -81,17 +77,6 @@ public class Inventory {
         }
 
         return inventoryList;
-    }
-
-    private static void saveInventory(String filename, Map<String, Integer> scores) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
-            for (Map.Entry<String, Integer> entry : scores.entrySet()) {
-                writer.write(entry.getKey() + " " + entry.getValue()); // Space instead of comma
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            System.out.println("Error saving inventory: " + e.getMessage());
-        }
     }
 
     public List<Products> getInventory() {

@@ -75,7 +75,7 @@ public class Cart {
             for (int i = 0; i < count; i++) {
                 System.out.println((i + 1) + " " + cart[i].printInfo());
             }
-            System.out.println("Total Cost: $" + cost);
+            System.out.println("Total Cost: $.2f%n" + cost);
         }
         if (count >= 3) {
             System.out.printf("Discounted Total (20%% off): $%.2f%n", finalTotal);

@@ -1,5 +1,6 @@
 Guest Receipt
 ------------------------
-SlateForm Jeans | PANTS | M   | $49.99
-Total: $49.99
+LayerCore Graphic Hoodie | HOODIES | XL   | $59.99
+AxisCut Jeans | PANTS | M   | $49.99
+Total: $109.98
 ------------------------
