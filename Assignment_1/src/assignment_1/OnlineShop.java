@@ -5,6 +5,7 @@
 package assignment_1;
 
 import java.io.FileNotFoundException;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Scanner;
 
@@ -62,7 +63,7 @@ public class OnlineShop {
 
                         if (choice.equalsIgnoreCase("yes")) {
                             addToCart(scanner, storage.getInventory(), ct);
-                        } else if (choice != ("yes") || choice != ("no")) {
+                        } else if (!choice.equalsIgnoreCase("no")) {
                             System.out.println("Invalid input, Please enter yes or no!");
                         }
                         break;
@@ -274,7 +275,10 @@ public class OnlineShop {
                                 ReceiptGenerator.writeCartSummary(ct, user);
                                 user.getOrderHistory().saveOrderToFile(user.getName(), ct);
                             }
-                        } else {
+                        } else if (receiptChoice.equalsIgnoreCase("no")) {
+                            System.out.println("You opted to not save your receipt'");
+                        }
+                        else{
                             System.out.println("Invalid input, Please enter 'YES' or 'NO'");
                         }
 
@@ -312,14 +316,15 @@ public class OnlineShop {
     }
 
     private void showBalance(Customer user) {
+        DecimalFormat format = new DecimalFormat("#0.00");
         if (user != null) {
 
             Money wallet = user.getMoney();
             double currentBalance = wallet.getBalance();
-            System.out.printf("YOUR CURRENT BALANCE IS: $%.2f%n", currentBalance);
+            System.out.println("YOUR CURRENT BALANCE IS: " +  format.format(currentBalance));
 
             double updatedBalance = wallet.insertAmount();
-            System.out.printf("YOUR CURRENT BALANCE IS: $%.2f%n", updatedBalance);
+            System.out.println("YOUR CURRENT BALANCE IS: " + format.format(updatedBalance));
 
             user.getMoney().saveUserBalance(user);
 

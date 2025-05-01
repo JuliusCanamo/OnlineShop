@@ -29,13 +29,15 @@ public class Discounts {
     }
     
     public double discountTotal(Cart cart){
+        DecimalFormat format = new DecimalFormat("#0.00");
         int itemCount= cart.getCartItems().size();
         double totalCost= cart.getTotalCost();
         
         if(itemCount>=3){
             double discount=totalCost * DISCOUNT_RATE;
             double discountedTotal= totalCost - discount;
-            System.out.printf("Discount applied! Original Total: $.2f, Discounted Total: $.2f \n", totalCost, discountedTotal);
+            System.out.println("Discount applied! Original Total: " + format.format(totalCost));
+            System.out.println("Discounted Total: " + format.format(discountedTotal));
             return discountedTotal;
         }else{
             return totalCost;

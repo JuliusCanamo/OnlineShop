@@ -4,6 +4,7 @@
  */
 package assignment_1;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,6 +67,8 @@ public class Cart {
 
         Discounts d = new Discounts();
         double finalTotal = d.discountTotal(this);
+        
+        DecimalFormat format = new DecimalFormat("#0.00");
 
         System.out.println("Inside the Cart:");
 
@@ -75,10 +78,10 @@ public class Cart {
             for (int i = 0; i < count; i++) {
                 System.out.println((i + 1) + " " + cart[i].printInfo());
             }
-            System.out.println("Total Cost: $.2f%n" + cost);
+            System.out.println("Total Cost: " + format.format(cost));
         }
         if (count >= 3) {
-            System.out.printf("Discounted Total (20%% off): $%.2f%n", finalTotal);
+            System.out.println("Discounted Total (20%% off): " + format.format(finalTotal));
         }
     }
 
