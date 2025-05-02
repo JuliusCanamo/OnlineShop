@@ -43,10 +43,17 @@ public class Money {
     public double insertAmount() {
         Scanner scanner = new Scanner(System.in);
         DecimalFormat format = new DecimalFormat("#0.00");
+        String query;
+        
+        do {
+            System.out.println("WOULD YOU LIKE TO INSERT MONEY INTO YOUR ACCOUNT? (YES/NO)");
+            query = scanner.nextLine().trim();
+            OnlineShop.checkExit(query);
 
-        System.out.println("WOULD YOU LIKE TO INSERT MONEY INTO YOUR ACCOUNT? (YES/NO)");
-        String query = scanner.nextLine().trim();
-        OnlineShop.checkExit(query);
+            if (!query.equalsIgnoreCase("yes") && !query.equalsIgnoreCase("no")) {
+                System.out.println("INVALID INPUT. PLEASE TYPE 'YES' OR 'NO'.");
+            }
+        } while (!query.equalsIgnoreCase("yes") && !query.equalsIgnoreCase("no"));
 
         while (query.equalsIgnoreCase("yes")) {
             System.out.println("HOW MUCH WOULD YOU LIKE TO INSERT?");

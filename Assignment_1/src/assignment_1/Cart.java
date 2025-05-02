@@ -1,21 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Other/File.java to edit this template
- */
 package assignment_1;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author simpl
- */
 public class Cart {
-    //the template of the code was found from Stack Overflow
-    //https://stackoverflow.com/questions/18473130/shopping-cart-java-application-addtocart
-    //it has been slightly altered to fit the classes that I have made
 
     private Products[] cart;
     private int capacity;
@@ -24,9 +13,9 @@ public class Cart {
 
     public Cart() {
         this.capacity = 10;
-        cart = new Products[capacity];
-        this.cost = 0.0;
+        this.cart = new Products[capacity];
         this.count = 0;
+        this.cost = 0.0;
     }
 
     public List<Products> getCartItems() {
@@ -38,11 +27,13 @@ public class Cart {
     }
 
     public void addToCart(Products p) {
+        if (count >= capacity) {
+            expandCart();
+        }
         cart[count] = p;
         cost += p.getItemPrice();
         count++;
-
-        System.out.println(p.getItemName() + " has been added to cart");
+        System.out.println(p.getItemName() + " has been added to cart.");
     }
 
     public void addToCart(int itemNumber, List<Products> availableProducts) {
@@ -51,37 +42,27 @@ public class Cart {
             return;
         }
 
-        Products selectedProduct = availableProducts.get(itemNumber - 1); // 1-based index
-        cart[count] = selectedProduct;
-        
-        
-        //cost += selectedProduct.getItemPrice();
-        //count++;
-
-       // System.out.println(selectedProduct.getItemName() + " has been added to cart.");
-
-    
+        Products selectedProduct = availableProducts.get(itemNumber - 1);
+        addToCart(selectedProduct); // Reuse existing method
     }
 
     public void viewCart() {
-
-        Discounts d = new Discounts();
-        double finalTotal = d.discountTotal(this);
-        
         DecimalFormat format = new DecimalFormat("#0.00");
+        Discounts discount = getApplicableDiscount();
 
+        double discountedTotal = discount.applyDiscount(this);
         System.out.println("Inside the Cart:");
 
         if (count == 0) {
             System.out.println("Cart is empty.");
         } else {
             for (int i = 0; i < count; i++) {
-                System.out.println((i + 1) + " " + cart[i].printInfo());
+                System.out.println((i + 1) + ". " + cart[i].printInfo());
             }
-            System.out.println("Total Cost: " + format.format(cost));
-        }
-        if (count >= 3) {
-            System.out.println("Discounted Total (20%% off): " + format.format(finalTotal));
+            System.out.println("Total Cost: $" + format.format(cost));
+            if (discount instanceof BulkDiscount) {
+                System.out.println("Discounted Total (20% off): $" + format.format(discountedTotal));
+            }
         }
     }
 
@@ -91,11 +72,29 @@ public class Cart {
         }
         count = 0;
         cost = 0.0;
-        System.out.println("Cart has been cleared");
+        System.out.println("Cart has been cleared.");
     }
 
     public double getTotalCost() {
         return cost;
     }
 
+    public int getItemCount() {
+        return count;
+    }
+
+    private void expandCart() {
+        capacity *= 2;
+        Products[] newCart = new Products[capacity];
+        System.arraycopy(cart, 0, newCart, 0, count);
+        cart = newCart;
+    }
+
+    // Choose appropriate discount based on cart size
+    private Discounts getApplicableDiscount() {
+        if (count >= 3) {
+            return new BulkDiscount();
+        }
+        return new NoDiscount();
+    }
 }
