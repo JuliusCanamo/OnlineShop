@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author simpl
  */
-public class Category {
+public class Category{
 
     public enum CategoryType {
         PANTS, //Added for jeans
