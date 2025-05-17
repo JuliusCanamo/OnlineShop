@@ -13,8 +13,10 @@ import java.io.FileNotFoundException;
 public class App {
 
     public static void main(String args[]) throws FileNotFoundException {
-        OnlineShop app = new OnlineShop();
-        app.ShopInterface();
+        //OnlineShop app = new OnlineShop();
+        //app.ShopInterface();
+        
+        View view = new View();
     }
     
 }
