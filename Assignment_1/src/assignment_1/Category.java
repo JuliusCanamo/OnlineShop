@@ -22,7 +22,8 @@ public class Category{
         OUTERWEAR, // Added for jackets, blazers, coats, etc.
         ACTIVEWEAR, // Added for sports, leggings, gym shorts, etc.
         DRESSES, // Added for dresses, rompers, jumpsuits
-        FOOTWEAR;     // Added for shoes, boots, sandals, etc.
+        FOOTWEAR,     // Added for shoes, boots, sandals, etc.
+        PERFUME; //for the perfume yerr gang
     }
 
     public void printType(String tp, List<Products> product) {

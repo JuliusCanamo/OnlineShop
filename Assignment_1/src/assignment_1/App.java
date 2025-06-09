@@ -17,6 +17,7 @@ public class App {
         //app.ShopInterface();
         
         View view = new View();
+        //view.addActionListener(view.new ButtonListener());
     }
     
 }
