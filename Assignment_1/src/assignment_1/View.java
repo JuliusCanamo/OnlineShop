@@ -9,10 +9,14 @@ import java.io.IOException;
 import java.util.List;
 import javax.swing.*;
 
+/**
+ *
+ * @author juliuscanamo
+ */
+
 public class View extends JFrame implements ShopListener {
 
-    private Database db = new Database();
-
+    private final Database db = new Database();
     private final Color backgroundColor = Color.decode("#011826");
     private final Color accentColor = Color.decode("#24A3BF");
     private final Color secondaryColor = Color.decode("#266573");
@@ -35,31 +39,34 @@ public class View extends JFrame implements ShopListener {
     private JButton backToStartButton = new JButton("Back to Start");
     private JButton discountButton = new JButton("View Discounts");
     private JButton orderHistoryButton = new JButton("Order History");
-    private OrderHistory orderHistory = new OrderHistory();
+
+    private final OrderHistory orderHistory = new OrderHistory();
+    private final Cart cart = new Cart();
 
     private JLabel currentBalanceLabel = new JLabel("Current Balance: $0.00");
     private JLabel userLabel = new JLabel("Logged in: Guest");
 
     private JTextField cartInputField = new JTextField(5);
     private Customer currentUser;
-    private Cart cart = new Cart();
     private List<Products> displayedProducts = null;
-    
+
+    private Controller controller;
+
+    public void setController(Controller controller) {
+        this.controller = controller;
+    }
 
     public View() {
         db.dbsetup();
-
-        this.setTitle("Collection World Shop");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(850, 650);
-        this.setLocationRelativeTo(null);
-
+        setTitle("Collection World Shop");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(850, 650);
+        setLocationRelativeTo(null);
         initLoginPanel();
         initShopPanel();
-
-        this.add(mainPanel);
-        this.getContentPane().setBackground(backgroundColor);
-        this.setVisible(true);
+        add(mainPanel);
+        getContentPane().setBackground(backgroundColor);
+        setVisible(true);
     }
 
     private void showShop() {
@@ -71,6 +78,47 @@ public class View extends JFrame implements ShopListener {
     private void showLogin() {
         CardLayout cl = (CardLayout) (mainPanel.getLayout());
         cl.show(mainPanel, "login");
+    }
+    
+        private void showLoginForm() {
+        JPanel panel = new JPanel(new GridLayout(3, 2, 10, 10));
+        panel.setBackground(extraLightColor);
+
+        panel.add(new JLabel("Username:"));
+        JTextField usernameField = new JTextField(15);
+        panel.add(usernameField);
+
+        panel.add(new JLabel("Password:"));
+        JPasswordField passwordField = new JPasswordField(15);
+        panel.add(passwordField);
+
+        int result = JOptionPane.showConfirmDialog(this, panel, "Login", JOptionPane.OK_CANCEL_OPTION);
+
+        if (result == JOptionPane.OK_OPTION) {
+            String username = usernameField.getText().trim();
+            String password = new String(passwordField.getPassword()).trim();
+
+            Customer customer = db.checkName(username, password);
+
+            if (customer != null) {
+                db.loadUserBalance(customer);
+                onLogin(customer);
+            } else {
+                int regOption = JOptionPane.showConfirmDialog(this, "User not found. Register?", "Register", JOptionPane.YES_NO_OPTION);
+                if (regOption == JOptionPane.YES_OPTION) {
+                    Customer newUser = db.registerUser(username, password);
+                    if (newUser != null) {
+                        db.loadUserBalance(newUser);
+                        currentUser = newUser;
+                        showShop();
+                        updateBalanceDisplay();
+                        updateUserLabel();
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Registration failed.");
+                }
+            }
+        }
     }
 
     private void initLoginPanel() {
@@ -128,53 +176,13 @@ public class View extends JFrame implements ShopListener {
         guestBtn.addActionListener(e -> {
             dialog.dispose();
             currentUser = new Customer("Guest", "Guest");
+            controller.setCurrentUser(currentUser);
             showShop();
             updateBalanceDisplay();
             updateUserLabel();
         });
 
         dialog.setVisible(true);
-    }
-
-    private void showLoginForm() {
-        JPanel panel = new JPanel(new GridLayout(3, 2, 10, 10));
-        panel.setBackground(extraLightColor);
-
-        panel.add(new JLabel("Username:"));
-        JTextField usernameField = new JTextField(15);
-        panel.add(usernameField);
-
-        panel.add(new JLabel("Password:"));
-        JPasswordField passwordField = new JPasswordField(15);
-        panel.add(passwordField);
-
-        int result = JOptionPane.showConfirmDialog(this, panel, "Login", JOptionPane.OK_CANCEL_OPTION);
-
-        if (result == JOptionPane.OK_OPTION) {
-            String username = usernameField.getText().trim();
-            String password = new String(passwordField.getPassword()).trim();
-
-            Customer customer = db.checkName(username, password);
-
-            if (customer != null) {
-                db.loadUserBalance(customer);
-                onLogin(customer);
-            } else {
-                int regOption = JOptionPane.showConfirmDialog(this, "User not found. Register?", "Register", JOptionPane.YES_NO_OPTION);
-                if (regOption == JOptionPane.YES_OPTION) {
-                    Customer newUser = db.registerUser(username, password);
-                    if (newUser != null) {
-                        db.loadUserBalance(newUser);
-                        currentUser = newUser;
-                        showShop();
-                        updateBalanceDisplay();
-                        updateUserLabel();
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(this, "Registration failed.");
-                }
-            }
-        }
     }
 
     private void initShopPanel() {
@@ -235,14 +243,44 @@ public class View extends JFrame implements ShopListener {
         printAll.addActionListener(e -> showAllProducts());
         printCategory.addActionListener(e -> showByCategory());
         cartButton.addActionListener(e -> showCart());
-        balanceButton.addActionListener(e -> showBalance());
+        balanceButton.addActionListener(e -> controller.addBalance());
         discountButton.addActionListener(e -> showDiscounts());
         orderHistoryButton.addActionListener(e -> showOrderHistory());
-        addToCartButton.addActionListener(e -> addToCart());
-        checkoutButton.addActionListener(e -> checkout());
+        addToCartButton.addActionListener(e -> {
+            try {
+                int itemNumber = Integer.parseInt(cartInputField.getText().trim());
+                controller.addToCart(itemNumber, displayedProducts);
+                cartInputField.setText("");
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Enter a valid item number.");
+            }
+        });
+
+        checkoutButton.addActionListener(e -> controller.checkout());
         backToStartButton.addActionListener(e -> returnToStart());
 
         mainPanel.add(shopPanel, "shop");
+    }
+
+    private void returnToStart() {
+        cart.clearCart();
+        currentUser = null;
+        showLogin();
+    }
+
+    private void refresh() {
+        displayPanel.revalidate();
+        displayPanel.repaint();
+    }
+
+    private void styleButton(JButton button) {
+        button.setBackground(accentColor);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setFont(new Font("Arial", Font.BOLD, 14));
+        button.setOpaque(true);
+        button.setContentAreaFilled(true);
+        button.setBorderPainted(false);
     }
 
     private void updateUserLabel() {
@@ -284,6 +322,26 @@ public class View extends JFrame implements ShopListener {
         welcomePanel.add(Box.createVerticalGlue());
 
         displayPanel.add(welcomePanel, BorderLayout.CENTER);
+        refresh();
+    }
+
+    @Override
+    public void onLogin(Customer customer) {
+        if (controller != null && customer != null) {
+            currentUser = customer;
+            controller.setCurrentUser(customer);
+            updateBalanceDisplay();
+            updateUserLabel();
+            showShop();
+        } else {
+            JOptionPane.showMessageDialog(this, "Error: Controller not initialized.");
+        }
+}
+
+    void updateBalanceDisplay() {
+        db.loadUserBalance(currentUser);
+        double balance = currentUser.getMoney().getBalance();
+        currentBalanceLabel.setText("Current Balance: $" + String.format("%.2f", balance));
         refresh();
     }
 
@@ -348,82 +406,6 @@ public class View extends JFrame implements ShopListener {
         refresh();
     }
 
-// Add product to cart based on selection
-    private void addToCart() {
-        try {
-            int itemNumber = Integer.parseInt(cartInputField.getText().trim());
-            if (displayedProducts == null || displayedProducts.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Nothing displayed to add.");
-                return;
-            }
-            if (itemNumber < 1 || itemNumber > displayedProducts.size()) {
-                JOptionPane.showMessageDialog(this, "Invalid item number.");
-            } else {
-                Products selected = displayedProducts.get(itemNumber - 1);
-                cart.addToCart(selected);
-                JOptionPane.showMessageDialog(this, selected.getItemName() + " added to cart.");
-                cartInputField.setText("");
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Enter a valid number.");
-        }
-    }
-
-// Full checkout process 
-    private void checkout() {
-        if (cart.getItemCount() == 0) {
-            JOptionPane.showMessageDialog(this, "Your cart is empty.");
-            return;
-        }
-
-        double total = cart.getTotalCost();
-        Discounts discount = (cart.getItemCount() >= 3) ? new BulkDiscount() : new NoDiscount();
-        double discountedTotal = discount.applyDiscount(cart);
-
-        db.loadUserBalance(currentUser);
-        double currentBalance = currentUser.getMoney().getBalance();
-
-        if (currentBalance < discountedTotal) {
-            JOptionPane.showMessageDialog(this,
-                    "Insufficient funds.\nTotal: $" + String.format("%.2f", discountedTotal)
-                    + "\nCurrent balance: $" + String.format("%.2f", currentBalance));
-
-            while (currentBalance < discountedTotal) {
-                String input = JOptionPane.showInputDialog(this,
-                        "Please insert additional funds to continue:", "Add Funds", JOptionPane.PLAIN_MESSAGE);
-                if (input == null) {
-                    JOptionPane.showMessageDialog(this, "Checkout cancelled.");
-                    return;
-                }
-                try {
-                    double amount = Double.parseDouble(input);
-                    if (amount > 0) {
-                        currentUser.getMoney().depositMoney(amount);
-                        db.saveUserBalance(currentUser);
-                        currentBalance = currentUser.getMoney().getBalance();
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Enter a valid positive amount.");
-                    }
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(this, "Invalid input.");
-                }
-            }
-        }
-
-        if (currentUser.getName().equalsIgnoreCase("Guest")) {
-            ReceiptGenerator.displayGuestReceipt(cart);
-        } else {
-            ReceiptGenerator.displayUserReceipt(cart, currentUser);
-            //  Save order to Order History for logged in user:
-            orderHistory.saveOrderToFile(currentUser.getName(), cart);
-        }
-
-        currentUser.getMoney().setBalance(currentBalance - discountedTotal);
-        db.saveUserBalance(currentUser);
-        updateBalanceDisplay();
-        cart.clearCart();
-        showCart();
-    }
 
 // View current balance + add funds
     private void showBalance() {
@@ -562,7 +544,7 @@ public class View extends JFrame implements ShopListener {
     }
 
     // Displays the current cart contents
-    private void showCart() {
+    void showCart() {
         List<Products> items = cart.getCartItems();
         displayPanel.removeAll();
 
@@ -589,45 +571,5 @@ public class View extends JFrame implements ShopListener {
         }
         refresh();
     }
-
-// Reset everything and return to start
-    private void returnToStart() {
-        cart.clearCart();
-        currentUser = null;
-        showLogin();
-    }
-
-    private void refresh() {
-        displayPanel.revalidate();
-        displayPanel.repaint();
-    }
-
-   private void styleButton(JButton button) {
-    button.setBackground(accentColor);
-    button.setForeground(Color.WHITE);
-    button.setFocusPainted(false);
-    button.setFont(new Font("Arial", Font.BOLD, 14));
-    button.setOpaque(true);
-    button.setContentAreaFilled(true);
-    button.setBorderPainted(false);
-}
-
-    @Override
-    public void onLogin(Customer customer) {
-        if (customer != null) {
-            currentUser = customer;
-            db.loadUserBalance(currentUser);
-            updateBalanceDisplay();
-            updateUserLabel();
-            showShop();
-        }
-    }
-
-    private void updateBalanceDisplay() {
-        db.loadUserBalance(currentUser);
-        double balance = currentUser.getMoney().getBalance();
-        currentBalanceLabel.setText("Current Balance: $" + String.format("%.2f", balance));
-        refresh();
-    }
-
+    
 }

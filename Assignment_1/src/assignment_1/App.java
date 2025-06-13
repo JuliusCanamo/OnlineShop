@@ -8,7 +8,7 @@ import java.io.FileNotFoundException;
 
 /**
  *
- * @author simpl
+ * @author juliuscanamo
  */
 public class App {
 
@@ -16,8 +16,16 @@ public class App {
         //OnlineShop app = new OnlineShop();
         //app.ShopInterface();
         
-        View view = new View();
+        //View view = new View();
         //view.addActionListener(view.new ButtonListener());
-    }
-    
+        
+        Database db = new Database();
+        db.dbsetup();
+
+        Cart cart = new Cart();
+        OrderHistory orderHistory = new OrderHistory();
+        View view = new View();
+        Controller controller = new Controller(db, cart, null, view, orderHistory);
+
+        view.setController(controller);    }  
 }
