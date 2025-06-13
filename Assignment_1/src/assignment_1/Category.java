@@ -59,6 +59,7 @@ public class Category{
                     + "FOOTWEAR");
         }
     }
+    
 public List<Products> getFilteredProducts(String tp, List<Products> products) {
     List<Products> filtered = new ArrayList<>();
     try {

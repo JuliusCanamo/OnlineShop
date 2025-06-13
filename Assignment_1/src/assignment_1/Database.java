@@ -18,6 +18,7 @@ import java.util.List;
  * @author juliuscanamo
  */
 public class Database {
+
     Connection userConn = null;
     Connection inventoryConn = null;
     String userURL = "jdbc:derby:Users;create=true";
@@ -26,7 +27,7 @@ public class Database {
     public void dbsetup() {
         setupUserDB();
         setupProductDB();
-        insertProducts(); 
+        insertProducts();
     }
 
     private void setupUserDB() {
@@ -54,8 +55,8 @@ public class Database {
             String tableName = "Products";
 
             if (!checkTableExisting(inventoryConn, tableName)) {
-                statement.executeUpdate("CREATE TABLE " + tableName +
-                        " (itemName VARCHAR(100), type VARCHAR(100), size VARCHAR(100), price DOUBLE)");
+                statement.executeUpdate("CREATE TABLE " + tableName
+                        + " (itemName VARCHAR(100), type VARCHAR(100), size VARCHAR(100), price DOUBLE)");
             }
             statement.close();
         } catch (Throwable e) {
@@ -76,7 +77,9 @@ public class Database {
                     flag = true;
                 }
             }
-            if (rs != null) rs.close();
+            if (rs != null) {
+                rs.close();
+            }
         } catch (Exception e) {
             System.out.println("Table checking error: " + e.getMessage());
         }
@@ -85,7 +88,7 @@ public class Database {
 
     private void insertProducts() {
         //this code only inserts the products if its empty
-         try {
+        try {
             inventoryConn = DriverManager.getConnection(inventoryURL);
 
             // Check if the Products table already has data
@@ -152,7 +155,7 @@ public class Database {
             e.printStackTrace();
             System.out.println("Unable to store products: " + e.getMessage());
         }
-        
+
 //        try {
 //            inventoryConn = DriverManager.getConnection(inventoryURL);
 //            String sql = "INSERT INTO Products (itemName, type, size, price) VALUES (?, ?, ?, ?)";
@@ -207,7 +210,7 @@ public class Database {
 //            System.out.println("Unable to store products: " + e.getMessage());
 //        }
     }
-    
+
     public List<Products> getAllProducts() {
         List<Products> products = new ArrayList<>();
         try {
@@ -239,7 +242,6 @@ public class Database {
         return products;
     }
 
-    
     public List<Products> getFilteredProducts(String tp) {
         List<Products> allProducts = getAllProducts();
         List<Products> filtered = new ArrayList<>();
@@ -271,18 +273,18 @@ public class Database {
                     cust = new Customer(username, password);
                 } else {
                     JOptionPane.showMessageDialog(null,
-                        "Incorrect password.",
-                        "Login Failed",
-                        JOptionPane.ERROR_MESSAGE);
+                            "Incorrect password.",
+                            "Login Failed",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             } else {
-                
+
                 statement.executeUpdate("INSERT INTO UserDB (userid, password, balance) VALUES('" + username + "', '" + password + "', 0.0)");
 
                 JOptionPane.showMessageDialog(null,
-                    "New user registered successfully!",
-                    "Registration",
-                    JOptionPane.INFORMATION_MESSAGE);
+                        "New user registered successfully!",
+                        "Registration",
+                        JOptionPane.INFORMATION_MESSAGE);
 
                 cust = new Customer(username, password);
             }
@@ -294,7 +296,7 @@ public class Database {
         }
         return cust;
     }
-    
+
     public void loadUserBalance(Customer user) {
         if (user == null) {
             System.out.println("User not provided. Cannot save balance.");
@@ -314,7 +316,7 @@ public class Database {
             System.out.println("Error loading user balance: " + e.getMessage());
         }
     }
-    
+
     public void saveUserBalance(Customer user) {
         if (user == null) {
             System.out.println("User not provided. Cannot save balance.");
@@ -331,6 +333,34 @@ public class Database {
             e.printStackTrace();
             System.out.println("Error loading user balance: " + e.getMessage());
         }
-        
+
     }
+    // USER REGISTRATION
+
+    public Customer registerUser(String username, String password) {
+        try {
+            PreparedStatement checkStmt = userConn.prepareStatement("SELECT * FROM UserDB WHERE userid = ?");
+            checkStmt.setString(1, username);
+            ResultSet rs = checkStmt.executeQuery();
+
+            if (rs.next()) {
+                JOptionPane.showMessageDialog(null, "USERNAME ALREADY EXISTS.");
+                return null;
+            }
+
+            PreparedStatement insertStmt = userConn.prepareStatement("INSERT INTO UserDB (userid, password, balance) VALUES (?, ?, ?)");
+            insertStmt.setString(1, username);
+            insertStmt.setString(2, password);
+            insertStmt.setDouble(3, 0.0);  // Initial balance is zero
+            insertStmt.executeUpdate();
+
+            System.out.println("USER REGISTERED: " + username);
+            return new Customer(username, password);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            System.out.println("REGISTER USER ERROR: " + e.getMessage());
+            return null;
+        }
+    }
+
 }

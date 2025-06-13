@@ -16,7 +16,7 @@ import java.util.Scanner;
  */
 public class UserManager {
 
-    private HashMap<String, Customer> users; // check this
+    private HashMap<String, Customer> users; 
     private Customer loggedInUser = null;
 
     public UserManager() {

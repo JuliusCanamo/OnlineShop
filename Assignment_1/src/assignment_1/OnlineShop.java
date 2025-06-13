@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Other/File.java to edit this template
- */
 package assignment_1;
 
 import java.io.FileNotFoundException;
@@ -60,11 +56,15 @@ public class OnlineShop {
                         break;
                     case "B":
                         List<Products> filtered = showCategories(scanner, storage);
-                        System.out.println("WOULD YOU LIKE TO ADD AN ITEM TO THE CART? PLEASE ENTER ('YES'/ 'NO')");
-                        choice = scanner.nextLine().trim();
-                        checkExit(choice);
-                        if (choice.equalsIgnoreCase("yes")) {
-                            addToCart(scanner, filtered, ct);
+                        if (!filtered.isEmpty()) {
+                            System.out.println("WOULD YOU LIKE TO ADD AN ITEM TO THE CART? PLEASE ENTER ('YES'/ 'NO')");
+                            choice = scanner.nextLine().trim();
+                            checkExit(choice);
+                            if (choice.equalsIgnoreCase("yes")) {
+                                addToCart(scanner, filtered, ct); //  Always pass the filtered list here!!
+                            } else if (!choice.equalsIgnoreCase("no")) {
+                                System.out.println("Invalid input, Please enter yes or no!");
+                            }
                         }
                         break;
                     case "C":
@@ -106,21 +106,21 @@ public class OnlineShop {
                         checkExit(choice);
                         if (choice.equalsIgnoreCase("yes")) {
                             addToCart(scanner, storage.getInventory(), ct);
-                        } else if (choice.equalsIgnoreCase("no")) {
-                            break;
-                        } else {
-                            System.out.println("Invalid input, Please enter YES or NO!");
+                        } else if (!choice.equalsIgnoreCase("no")) {
+                            System.out.println("Invalid input, Please enter yes or no!");
                         }
                         break;
                     case "B":
                         List<Products> filtered = showCategories(scanner, storage);
-                        System.out.println("WOULD YOU LIKE TO ADD AN ITEM TO THE CART? PLEASE ENTER ('YES'/ 'NO')");
-                        choice = scanner.nextLine().trim();
-                        checkExit(choice);
-                        if (choice.equalsIgnoreCase("yes")) {
-                            addToCart(scanner, filtered, ct);
-                        } else {
-                            System.out.println("(Invalid input, Please enter YES or NO!)");
+                        if (!filtered.isEmpty()) {
+                            System.out.println("WOULD YOU LIKE TO ADD AN ITEM TO THE CART? PLEASE ENTER ('YES'/ 'NO')");
+                            choice = scanner.nextLine().trim();
+                            checkExit(choice);
+                            if (choice.equalsIgnoreCase("yes")) {
+                                addToCart(scanner, filtered, ct);
+                            } else if (!choice.equalsIgnoreCase("no")) {
+                                System.out.println("Invalid input, Please enter yes or no!");
+                            }
                         }
                         break;
                     case "C":
@@ -243,9 +243,9 @@ public class OnlineShop {
 
                         if (receiptChoice.equalsIgnoreCase("yes")) {
                             if (user.getName().equalsIgnoreCase("Guest")) {
-                                ReceiptGenerator.saveGuestReceipt(ct);
+                                ReceiptGenerator.displayGuestReceipt(ct);
                             } else {
-                                ReceiptGenerator.writeCartSummary(ct, user);
+                               // ReceiptGenerator.writeCartSummary(ct, user);
                                 user.getOrderHistory().saveOrderToFile(user.getName(), ct);
                             }
                         } else if (receiptChoice.equalsIgnoreCase("no")) {

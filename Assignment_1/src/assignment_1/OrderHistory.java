@@ -13,39 +13,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class OrderHistory {
 
-//    private List<Cart> pastOrders;
-
-//    public OrderHistory() {
-//
-//        pastOrders = new ArrayList<>();
-//    }
-
-//    public void addOrder(Cart originalCart) {
-//        Cart saveCart = new Cart();
-//        for (Products p : originalCart.getCartItems()) {
-//            saveCart.addToCart(p);
-//        }
-//        pastOrders.add(saveCart);
-//    }
-
-//    public void printOrderHistory() {
-//        if (pastOrders.isEmpty()) {
-//        System.out.println("No past orders found.");
-//    } else {
-//        System.out.println("----- Past Orders -----");
-//        int orderNumber = 1;
-//        for (Cart cart : pastOrders) {
-//            System.out.println("\nOrder #" + orderNumber++);
-//            cart.viewCart();  // this prints the cart content and total
-//            System.out.println("-----------------------");
-//        }
-//    }
-//    }
     //Save cart to file for user
 
      public void saveOrderToFile(String userName, Cart cart) {

@@ -87,6 +87,7 @@ public class Money {
         return this.balance;
     }
 
+    //SAVES USER CURRENT BALANCE FROM SESSION   
     public void saveUserBalance(Customer user) {
         if (user == null) {
             System.out.println("User not provided. Cannot save balance.");
@@ -118,6 +119,8 @@ public class Money {
 //        and sets the saved balance from the previous session as its current
 //        most of the structure of the code was found from - 
 //        https://www.w3schools.com/java/java_files_read.asp*/
+    
+    //LOADS  USERS PREVIOUS BALANCE
     public void UserBalance(Customer user) {
         if (user == null) {
             System.out.println("User not provided. Cannot load balance.");

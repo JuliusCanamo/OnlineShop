@@ -6,33 +6,14 @@ import java.util.List;
 
 public class Cart {
 
-    private Products[] cart;
-    private int capacity;
-    private int count;
-    private double cost;
+    private List<Products> cartItems;
 
     public Cart() {
-        this.capacity = 10;
-        this.cart = new Products[capacity];
-        this.count = 0;
-        this.cost = 0.0;
-    }
-
-    public List<Products> getCartItems() {
-        List<Products> cartItems = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
-            cartItems.add(cart[i]);
-        }
-        return cartItems;
+        cartItems = new ArrayList<>();
     }
 
     public void addToCart(Products p) {
-        if (count >= capacity) {
-            expandCart();
-        }
-        cart[count] = p;
-        cost += p.getItemPrice();
-        count++;
+        cartItems.add(p);
         System.out.println(p.getItemName() + " has been added to cart.");
     }
 
@@ -43,58 +24,59 @@ public class Cart {
         }
 
         Products selectedProduct = availableProducts.get(itemNumber - 1);
-        addToCart(selectedProduct); // Reuse existing method
+        addToCart(selectedProduct);
+    }
+
+    public List<Products> getCartItems() {
+        return cartItems;
+    }
+
+    public double getTotalCost() {
+        double total = 0.0;
+        for (Products p : cartItems) {
+            total += p.getItemPrice();
+        }
+        return total;
+    }
+
+    public double getDiscountedTotal() {
+        double total = getTotalCost();
+        Discounts discount = getApplicableDiscount();
+        return discount.applyDiscount(this);
+    }
+
+    public int getItemCount() {
+        return cartItems.size();
+    }
+
+    public void clearCart() {
+        cartItems.clear();
+        System.out.println("Cart has been cleared.");
+    }
+
+    private Discounts getApplicableDiscount() {
+        if (cartItems.size() >= 3) {
+            return new BulkDiscount();
+        }
+        return new NoDiscount();
     }
 
     public void viewCart() {
         DecimalFormat format = new DecimalFormat("#0.00");
-        Discounts discount = getApplicableDiscount();
 
-        double discountedTotal = discount.applyDiscount(this);
         System.out.println("Inside the Cart:");
-
-        if (count == 0) {
+        if (cartItems.isEmpty()) {
             System.out.println("Cart is empty.");
         } else {
-            for (int i = 0; i < count; i++) {
-                System.out.println((i + 1) + ". " + cart[i].printInfo());
+            int i = 1;
+            for (Products p : cartItems) {
+                System.out.println(i++ + ". " + p.printInfo());
             }
-            System.out.println("Total Cost: $" + format.format(cost));
-            if (discount instanceof BulkDiscount) {
-                System.out.println("Discounted Total (20% off): $" + format.format(discountedTotal));
+            System.out.println("Total Cost: $" + format.format(getTotalCost()));
+
+            if (getApplicableDiscount() instanceof BulkDiscount) {
+                System.out.println("Discounted Total (20% off): $" + format.format(getDiscountedTotal()));
             }
         }
-    }
-
-    public void clearCart() {
-        for (int i = 0; i < count; i++) {
-            cart[i] = null;
-        }
-        count = 0;
-        cost = 0.0;
-        System.out.println("Cart has been cleared.");
-    }
-
-    public double getTotalCost() {
-        return cost;
-    }
-
-    public int getItemCount() {
-        return count;
-    }
-
-    private void expandCart() {
-        capacity *= 2;
-        Products[] newCart = new Products[capacity];
-        System.arraycopy(cart, 0, newCart, 0, count);
-        cart = newCart;
-    }
-
-    // Choose appropriate discount based on cart size
-    private Discounts getApplicableDiscount() {
-        if (count >= 3) {
-            return new BulkDiscount();
-        }
-        return new NoDiscount();
     }
 }

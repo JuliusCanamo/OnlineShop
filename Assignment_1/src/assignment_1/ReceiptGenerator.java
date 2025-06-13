@@ -1,103 +1,52 @@
 package assignment_1;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.List;
+import javax.swing.*;
 
 public class ReceiptGenerator {
 
-    public static void writeCartSummary(Cart cart, Customer user) {
-        if (user == null) {
-            System.out.println("User not provided. Cannot save personalized receipt.");
-            return;
+    public static void displayUserReceipt(Cart cart, Customer user) {
+        DecimalFormat df = new DecimalFormat("#0.00");
+
+        StringBuilder receipt = new StringBuilder();
+        receipt.append("====== Purchase Receipt ======\n\n");
+
+        List<Products> items = cart.getCartItems();
+        for (Products p : items) {
+            receipt.append(p.printInfo()).append("\n\n");
         }
 
-        String folderPath = "Receipts/" + user.getName();
-        File receiptDir = new File(folderPath);
+        double total = cart.getTotalCost();
+        double discountedTotal = cart.getDiscountedTotal();
+        double discountAmount = total - discountedTotal;
 
-        if (!receiptDir.exists()) {
-            receiptDir.mkdirs(); // create folder
-        }
+        receipt.append("Total: $").append(df.format(total)).append("\n");
+        receipt.append("Discount: $").append(df.format(discountAmount)).append("\n");
+        receipt.append("Final Total: $").append(df.format(discountedTotal)).append("\n");
 
-        int receiptNumber = receiptDir.list().length + 1;
-        String filename = "receipt_" + receiptNumber + ".txt";
-        File receiptFile = new File(receiptDir, filename);
-
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(receiptFile))) {
-            bw.write("====== Purchase Receipt ======\n");
-
-            for (Products p : cart.getCartItems()) {
-                bw.write(p.printInfo() + "\n");
-            }
-
-            double total = cart.getTotalCost();
-
-            // Discount logic
-            Discounts discount = cart.getItemCount() >= 3 ? new BulkDiscount() : new NoDiscount();
-            double discountedTotal = discount.applyDiscount(cart);
-
-            bw.write("\nTotal Amount: $" + String.format("%.2f", total));
-
-            if (discount instanceof BulkDiscount) {
-                double discountAmount = total - discountedTotal;
-                bw.write("\nDiscount (20%): -$" + String.format("%.2f", discountAmount));
-                bw.write("\nDiscounted Total: $" + String.format("%.2f", discountedTotal));
-            }
-
-            double beforeBalance = user.getMoney().getBalance() + discountedTotal;
-            double afterBalance = user.getMoney().getBalance();
-
-            bw.write("\n\nAccount Balance Before: $" + String.format("%.2f", beforeBalance));
-            bw.write("\nAccount Balance After:  $" + String.format("%.2f", afterBalance));
-
-            bw.write("\n==============================\n");
-
-            System.out.println("Receipt saved to: " + receiptFile.getAbsolutePath());
-
-        } catch (IOException e) {
-            System.out.println("Error writing receipt: " + e.getMessage());
-        }
+        JOptionPane.showMessageDialog(null, receipt.toString(), "Receipt for " + user.getName(), JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public static void saveGuestReceipt(Cart cart) {
-        String folderName = "GuestReceipts";
-        File receiptFolder = new File(folderName);
+    public static void displayGuestReceipt(Cart cart) {
+        DecimalFormat df = new DecimalFormat("#0.00");
 
-        if (!receiptFolder.exists()) {
-            receiptFolder.mkdirs();
+        StringBuilder receipt = new StringBuilder();
+        receipt.append("====== Guest Receipt ======\n\n");
+
+        List<Products> items = cart.getCartItems();
+        for (Products p : items) {
+            receipt.append(p.printInfo()).append("\n\n");
         }
 
-        String fileName = "guest_receipt.txt";
-        File receiptFile = new File(receiptFolder, fileName);
+        double total = cart.getTotalCost();
+        double discountedTotal = cart.getDiscountedTotal();
+        double discountAmount = total - discountedTotal;
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(receiptFile))) {
-            writer.write("Guest Receipt\n");
-            writer.write("------------------------\n");
+        receipt.append("Total: $").append(df.format(total)).append("\n");
+        receipt.append("Discount: $").append(df.format(discountAmount)).append("\n");
+        receipt.append("Final Total: $").append(df.format(discountedTotal)).append("\n");
 
-            for (Products p : cart.getCartItems()) {
-                writer.write(p.getItemName() + " | " + p.getItemType() + " | "
-                        + p.getItemSize() + " | $" + String.format("%.2f", p.getItemPrice()) + "\n");
-            }
-
-            double total = cart.getTotalCost();
-            Discounts discount = cart.getItemCount() >= 3 ? new BulkDiscount() : new NoDiscount();
-            double discountedTotal = discount.applyDiscount(cart);
-
-            writer.write("\nTotal Amount: $" + String.format("%.2f", total));
-
-            if (discount instanceof BulkDiscount) {
-                double discountAmount = total - discountedTotal;
-                writer.write("\nDiscount (20%): -$" + String.format("%.2f", discountAmount));
-                writer.write("\nDiscounted Total: $" + String.format("%.2f", discountedTotal));
-            }
-
-            writer.write("\n------------------------\n");
-
-            System.out.println("Guest receipt saved to: " + receiptFile.getAbsolutePath());
-
-        } catch (IOException e) {
-            System.out.println("Failed to save guest receipt: " + e.getMessage());
-        }
+        JOptionPane.showMessageDialog(null, receipt.toString(), "Guest Receipt", JOptionPane.INFORMATION_MESSAGE);
     }
 }
