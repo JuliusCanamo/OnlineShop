@@ -602,12 +602,15 @@ public class View extends JFrame implements ShopListener {
         displayPanel.repaint();
     }
 
-    private void styleButton(JButton button) {
-        button.setBackground(accentColor);
-        button.setForeground(Color.WHITE);
-        button.setFocusPainted(false);
-        button.setFont(new Font("Arial", Font.BOLD, 14));
-    }
+   private void styleButton(JButton button) {
+    button.setBackground(accentColor);
+    button.setForeground(Color.WHITE);
+    button.setFocusPainted(false);
+    button.setFont(new Font("Arial", Font.BOLD, 14));
+    button.setOpaque(true);
+    button.setContentAreaFilled(true);
+    button.setBorderPainted(false);
+}
 
     @Override
     public void onLogin(Customer customer) {
