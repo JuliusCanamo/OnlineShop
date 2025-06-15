@@ -362,5 +362,16 @@ public class Database {
             return null;
         }
     }
+    //DELETE USER
 
+    public void deleteUser(String username) {
+        try {
+            PreparedStatement ps = userConn.prepareStatement("DELETE FROM UserDB WHERE userid = ?");
+            ps.setString(1, username);
+            ps.executeUpdate();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -15,17 +15,19 @@ public class App {
     public static void main(String args[]) throws FileNotFoundException {
         //OnlineShop app = new OnlineShop();
         //app.ShopInterface();
-        
+
         //View view = new View();
         //view.addActionListener(view.new ButtonListener());
-        
         Database db = new Database();
         db.dbsetup();
 
         Cart cart = new Cart();
-        OrderHistory orderHistory = new OrderHistory();
-        View view = new View();
+        View view = new View(cart);  // pass the shared cart here!
+         OrderHistory orderHistory = new OrderHistory();
         Controller controller = new Controller(db, cart, null, view, orderHistory);
+        
+        view.setController(controller);
 
-        view.setController(controller);    }  
+       
+    }
 }

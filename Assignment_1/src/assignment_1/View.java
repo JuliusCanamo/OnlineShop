@@ -1,7 +1,6 @@
 package assignment_1;
 
 import java.awt.*;
-import java.awt.event.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -13,7 +12,6 @@ import javax.swing.*;
  *
  * @author juliuscanamo
  */
-
 public class View extends JFrame implements ShopListener {
 
     private final Database db = new Database();
@@ -41,7 +39,7 @@ public class View extends JFrame implements ShopListener {
     private JButton orderHistoryButton = new JButton("Order History");
 
     private final OrderHistory orderHistory = new OrderHistory();
-    private final Cart cart = new Cart();
+    private Cart cart;
 
     private JLabel currentBalanceLabel = new JLabel("Current Balance: $0.00");
     private JLabel userLabel = new JLabel("Logged in: Guest");
@@ -56,7 +54,8 @@ public class View extends JFrame implements ShopListener {
         this.controller = controller;
     }
 
-    public View() {
+    public View(Cart cart) {
+        this.cart = cart;
         db.dbsetup();
         setTitle("Collection World Shop");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -79,8 +78,8 @@ public class View extends JFrame implements ShopListener {
         CardLayout cl = (CardLayout) (mainPanel.getLayout());
         cl.show(mainPanel, "login");
     }
-    
-        private void showLoginForm() {
+
+    private void showLoginForm() {
         JPanel panel = new JPanel(new GridLayout(3, 2, 10, 10));
         panel.setBackground(extraLightColor);
 
@@ -336,7 +335,7 @@ public class View extends JFrame implements ShopListener {
         } else {
             JOptionPane.showMessageDialog(this, "Error: Controller not initialized.");
         }
-}
+    }
 
     void updateBalanceDisplay() {
         db.loadUserBalance(currentUser);
@@ -405,7 +404,6 @@ public class View extends JFrame implements ShopListener {
         displayPanel.add(cartInputPanel, BorderLayout.SOUTH);
         refresh();
     }
-
 
 // View current balance + add funds
     private void showBalance() {
@@ -571,5 +569,5 @@ public class View extends JFrame implements ShopListener {
         }
         refresh();
     }
-    
+
 }
