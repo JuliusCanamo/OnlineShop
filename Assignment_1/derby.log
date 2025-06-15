@@ -1,26 +1,26 @@
 ----------------------------------------------------------------
-Sat Jun 14 02:08:08 NZST 2025:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-0197-699e-8f05-00000f923650 
-on database directory /Users/juliuscanamo/Desktop/PDC/NetBeansProjects/OnlineShop/Assignment_1/Users with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@85ede7b 
-Loaded from file:/Users/juliuscanamo/Desktop/PDC/NetBeansProjects/OnlineShop/lib/derby.jar
+Sun Jun 15 17:51:31 NZST 2025:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-0197-7224-9954-000007086718 
+on database directory C:\Users\larai\OneDrive\Documents\SEMESTERS\OnlineShop\Assignment_1\Users with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@70dea4e 
+Loaded from file:/C:/Users/larai/OneDrive/Documents/SEMESTERS/SEM7/Assignment1/OnlineShop/Assignment_1/derby.jar
 java.vendor=Oracle Corporation
-java.runtime.version=21.0.6+8-LTS-188
-user.dir=/Users/juliuscanamo/Desktop/PDC/NetBeansProjects/OnlineShop/Assignment_1
-os.name=Mac OS X
-os.arch=aarch64
-os.version=15.5
+java.runtime.version=20+36-2344
+user.dir=C:\Users\larai\OneDrive\Documents\SEMESTERS\OnlineShop\Assignment_1
+os.name=Windows 11
+os.arch=amd64
+os.version=10.0
 derby.system.home=null
 Database Class Loader started - derby.database.classpath=''
 ----------------------------------------------------------------
-Sat Jun 14 02:08:08 NZST 2025:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a02ac013-0197-699e-8f05-00000f923650 
-on database directory /Users/juliuscanamo/Desktop/PDC/NetBeansProjects/OnlineShop/Assignment_1/Inventory with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@85ede7b 
-Loaded from file:/Users/juliuscanamo/Desktop/PDC/NetBeansProjects/OnlineShop/lib/derby.jar
+Sun Jun 15 17:51:31 NZST 2025:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a02ac013-0197-7224-9954-000007086718 
+on database directory C:\Users\larai\OneDrive\Documents\SEMESTERS\OnlineShop\Assignment_1\Inventory with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@70dea4e 
+Loaded from file:/C:/Users/larai/OneDrive/Documents/SEMESTERS/SEM7/Assignment1/OnlineShop/Assignment_1/derby.jar
 java.vendor=Oracle Corporation
-java.runtime.version=21.0.6+8-LTS-188
-user.dir=/Users/juliuscanamo/Desktop/PDC/NetBeansProjects/OnlineShop/Assignment_1
-os.name=Mac OS X
-os.arch=aarch64
-os.version=15.5
+java.runtime.version=20+36-2344
+user.dir=C:\Users\larai\OneDrive\Documents\SEMESTERS\OnlineShop\Assignment_1
+os.name=Windows 11
+os.arch=amd64
+os.version=10.0
 derby.system.home=null
 Database Class Loader started - derby.database.classpath=''
